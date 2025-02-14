@@ -10,11 +10,13 @@ namespace CommandControlServer.Api
         }
         public DbSet<Bot> Bots { get; set; }
         public DbSet<BotResponse> BotResponses { get; set; }
+        public DbSet<BotGroup> BotGroups { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Bot>().ToTable("Bots");
             modelBuilder.Entity<BotResponse>().ToTable("BotResponses");
+            modelBuilder.Entity<BotGroup>().ToTable("BotGroups");
         }
     }
 }

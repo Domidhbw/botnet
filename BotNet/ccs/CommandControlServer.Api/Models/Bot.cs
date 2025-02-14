@@ -9,5 +9,6 @@ namespace CommandControlServer.Api.Models
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public ICollection<BotResponse> Responses { get; set; }
+        public ICollection<BotGroup> BotGroups { get; set; }
     }
 }
