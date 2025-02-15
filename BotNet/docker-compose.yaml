@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  bot:
+    build: ./bot
+    ports:
+      - "5000:8080"
+    networks:
+      - bot-net
+    volumes:
+      - ./bot/Data:/app/Data
+      
+  commandcontrolserver.api:
+    build: ./ccs/commandcontrolserver.api
+    ports:
+      - "5001:8080"
+    networks:
+      - bot-net
+    
+    
+  commandcontrolserver-frontend:
+    build: ./ccs/commandcontrolserver-frontend
+    ports:
+      - "5002:8080"
+    networks:
+      - bot-net
+    
+    
+networks:
+  bot-net:
+    driver: bridge
