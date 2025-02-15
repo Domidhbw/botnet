@@ -6,10 +6,10 @@ EXPOSE 80
 # Use the SDK image to build the project
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-COPY CommandControlServer.Api.csproj commandcontrolserver.api/
-RUN dotnet restore "CommandControlServer.Api.csproj"
+COPY commandcontrolserver.api/CommandControlServer.Api.csproj commandcontrolserver.api/
+RUN dotnet restore "commandcontrolserver.api/CommandControlServer.Api.csproj"
 COPY . .
-WORKDIR "/src/CommandControlServer.Api"
+WORKDIR "/src/commandcontrolserver.api"
 RUN dotnet build "CommandControlServer.Api.csproj" -c Release -o /app/build
 
 # Publish the project

@@ -1,31 +1,39 @@
 version: '3.8'
 
 services:
-  bot:
-    build: ./bot
+  bot-api:
+    build:
+      context: ./bot
+      dockerfile: Bot.Api/Dockerfile
     ports:
-      - "5000:8080"
+      - "5001:80"
     networks:
-      - bot-net
-    volumes:
-      - ./bot/Data:/app/Data
-      
-  commandcontrolserver.api:
-    build: ./ccs/commandcontrolserver.api
+      - botnet-network
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+
+  ccs-api:
+    build:
+      context: ./ccs
+      dockerfile: commandcontrolserver.api/Dockerfile
     ports:
-      - "5001:8080"
+      - "5002:80"
     networks:
-      - bot-net
-    
-    
-  commandcontrolserver-frontend:
-    build: ./ccs/commandcontrolserver-frontend
+      - botnet-network
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+
+  ccs-frontend:
+    build:
+      context: ./ccs
+      dockerfile: commandcontrolserver-frontend/Dockerfile
     ports:
-      - "5002:8080"
+      - "4200:80"
+    depends_on:
+      - ccs-api
     networks:
-      - bot-net
-    
-    
+      - botnet-network
+
 networks:
-  bot-net:
+  botnet-network:
     driver: bridge
