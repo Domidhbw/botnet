@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CommandControlServer.Api
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class BotController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -15,7 +17,7 @@ namespace CommandControlServer.Api
 
         [HttpGet("bots")]
         public async Task<ActionResult<IEnumerable<Bot>>> GetBots()
-        {
+        { 
             return await _context.Bots
                 .Include(b => b.Responses)
                 .Include(b => b.BotGroups)
@@ -23,8 +25,10 @@ namespace CommandControlServer.Api
         }
 
         [HttpPost("registerBot")]
-        public async Task<ActionResult<Bot>> RegisterBot(Bot bot)
+        public async Task<ActionResult<Bot>> RegisterBot([FromBody] Bot bot)
         {
+            if (bot == null) return BadRequest("Bot is null");
+
             _context.Bots.Add(bot);
             await _context.SaveChangesAsync();
             return CreatedAtAction("GetBot", new { id = bot.BotId }, bot);
@@ -130,6 +134,19 @@ namespace CommandControlServer.Api
                 return BadRequest();
             }
             _context.Entry(botGroup).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
+
+        [HttpDelete("botGroup/{id}")]
+        public async Task<IActionResult> DeleteBotGroup(int id)
+        {
+            var botGroup = await _context.BotGroups.FindAsync(id);
+            if (botGroup == null)
+            {
+                return NotFound();
+            }
+            _context.BotGroups.Remove(botGroup);
             await _context.SaveChangesAsync();
             return NoContent();
         }
