@@ -1,6 +1,6 @@
 ﻿namespace Bot.Api.Models
 {
-    public class CommandResult
+    public class CommandResultModel
     {
         public string Command {  get; set; }
         public string Output { get; set; }

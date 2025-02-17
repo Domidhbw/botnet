@@ -17,7 +17,7 @@ namespace Bot.Api.Controllers
         [HttpGet("run")]
         public async Task<IActionResult> RunCommand([FromQuery] string cmd)
         {
-            Console.WriteLine("/run is getting activated");
+            Console.WriteLine("[Method] RunCommand");
             if (string.IsNullOrWhiteSpace(cmd))
             {
                 return BadRequest(new { error = "Command cannot be empty" });

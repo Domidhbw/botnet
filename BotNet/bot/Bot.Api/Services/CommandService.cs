@@ -6,7 +6,7 @@ namespace Bot.Api.Services
 {
     public class CommandService : ICommandService
     {
-        public async Task<CommandResult> ExecuteCommandAsync(string command)
+        public async Task<CommandResultModel> ExecuteCommandAsync(string command)
         {
             var processStartInfo = new ProcessStartInfo
             {
@@ -32,7 +32,7 @@ namespace Bot.Api.Services
 
             await process.WaitForExitAsync(); // Waits for process completion
 
-            return new CommandResult
+            return new CommandResultModel
             {
                 Command = command,
                 Output = errorBuilder.Length > 0 ? errorBuilder.ToString() : outputBuilder.ToString()
