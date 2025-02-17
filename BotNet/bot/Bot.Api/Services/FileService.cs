@@ -5,7 +5,7 @@ namespace Bot.Api.Services
 {
     public class FileService : IFileService
     {
-        private readonly string _baseDirectory = @"/app"; 
+        private readonly string _baseDirectory = @""; 
 
         public FileModel? ExecuteFileDownload(string relativePath)
         {
