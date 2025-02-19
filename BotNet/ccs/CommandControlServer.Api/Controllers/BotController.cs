@@ -69,13 +69,41 @@ namespace CommandControlServer.Api.Controllers
         }
 
         [HttpGet("bot/{id}")]
-        public async Task<ActionResult<Bot>> GetBot(int id)
+        public async Task<ActionResult<BotDto>> GetBot(int id)
         {
-            //TODO: Check for cycle
-            var bot = await _context.Bots.FindAsync(id);
+            var bot = await _context.Bots
+                .Include(b => b.BotGroups)
+                .Include(b => b.Responses)
+                .FirstOrDefaultAsync(b => b.BotId == id);
+
             if (bot == null) return NotFound();
 
-            return Ok(bot);
+            var botDto = new BotDto
+            {
+                BotId = bot.BotId,
+                Name = bot.Name,
+                Status = bot.Status,
+                LastSeen = bot.LastSeen,
+                CreatedAt = bot.CreatedAt,
+                UpdatedAt = bot.UpdatedAt,
+                Responses = bot.Responses.Select(br => new BotResponseDto
+                {
+                    BotResponseId = br.BotResponseId,
+                    BotId = br.BotId,
+                    ResponseType = br.ResponseType,
+                    Data = br.Data,
+                    Timestamp = br.Timestamp,
+                    FileName = br.FileName
+                }).ToList(),
+                BotGroups = bot.BotGroups.Select(bg => new BotGroupDto
+                {
+                    BotGroupId = bg.BotGroupId,
+                    Name = bg.Name,
+                    CreatedAt = bg.CreatedAt
+                }).ToList()
+            };
+
+            return Ok(botDto);
         }
 
         [HttpPut("bot/{id}")]
