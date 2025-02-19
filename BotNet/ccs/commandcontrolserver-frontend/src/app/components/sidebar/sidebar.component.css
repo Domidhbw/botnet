@@ -1,0 +1,38 @@
+.bot-list {
+  width: 25%;
+  background-color: #1e1e1e;
+  padding: 10px;
+  border-right: 2px solid #333;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.custom-checkbox {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  background-color: #2a2a2a;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+  .custom-checkbox input {
+    display: none;
+  }
+
+.custom-checkbox-indicator {
+  width: 20px;
+  height: 20px;
+  border: 2px solid white;
+  border-radius: 3px;
+}
+
+.custom-checkbox input:checked + .custom-checkbox-indicator {
+  background-color: white;
+}
+
+.right-section {
+  display: flex;
+  gap: 8px;
+}

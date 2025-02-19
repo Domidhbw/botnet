@@ -1,0 +1,22 @@
+<div class="bot-list">
+  <h2>Bots</h2>
+  <ul>
+    <li *ngFor="let bot of bots">
+      <label class="custom-checkbox">
+        <input type="checkbox" [(ngModel)]="bot.checked" (change)="toggleBot(bot)">
+        <span class="custom-checkbox-indicator"></span>
+        <span class="bot-name">{{ bot.name }}</span>
+        <div class="right-section">
+          <span class="bot-id">{{ bot.id }}</span>
+          <span class="edit-icon" (click)="editBot(bot)">
+            ✏️
+          </span>
+          <span class="file-icon" (click)="showFiles(bot)">
+            📄
+          </span>
+        </div>
+      </label>
+    </li>
+  </ul>
+  <button (click)="openGroups()">Gruppen</button>
+</div>
