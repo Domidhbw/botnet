@@ -3,8 +3,8 @@ namespace CommandControlServer.Api.Models
     public class BotGroup
     {
         public int BotGroupId { get; set; }
-        public string Name { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public ICollection<Bot> Bots { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
+        public ICollection<Bot> Bots { get; set; } = new List<Bot>();
     }
 }
