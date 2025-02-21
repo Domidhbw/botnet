@@ -4,7 +4,7 @@ WORKDIR /app
 COPY commandcontrolserver-frontend/package.json commandcontrolserver-frontend/package-lock.json ./
 RUN npm install
 COPY commandcontrolserver-frontend/ .
-RUN npm run build --prod
+RUN npm run build -- --configuration=production
 
 # Use an Nginx image to serve the Angular app
 FROM nginx:alpine
