@@ -5,6 +5,7 @@ namespace CommandControlServer.Api.DTOs
     public class BotDto
     {
         public int BotId { get; set; }
+        public int Port { get; set; }
         public string Name { get; set; }
         public string Status { get; set; }
         public DateTimeOffset LastSeen { get; set; }

@@ -3,6 +3,7 @@ namespace CommandControlServer.Api.Models
     public class Bot
     {
         public int BotId { get; set; }
+        public int Port { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Status { get; set; } = "online";
         public DateTimeOffset LastSeen { get; set; } = DateTimeOffset.UtcNow;

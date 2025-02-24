@@ -41,6 +41,7 @@ namespace CommandControlServer.Api.Controllers
                 Bot = new BotDto
                 {
                     BotId = br.Bot.BotId,
+                    Port = br.Bot.Port,
                     Name = br.Bot.Name,
                     Status = br.Bot.Status,
                     LastSeen = br.Bot.LastSeen,
@@ -78,6 +79,7 @@ namespace CommandControlServer.Api.Controllers
                 Bot = new BotDto
                 {
                     BotId = botResponse.Bot.BotId,
+                    Port = botResponse.Bot.Port,
                     Name = botResponse.Bot.Name,
                     Status = botResponse.Bot.Status,
                     LastSeen = botResponse.Bot.LastSeen,
@@ -115,6 +117,7 @@ namespace CommandControlServer.Api.Controllers
                 Bot = new BotDto
                 {
                     BotId = botResponse.Bot.BotId,
+                    Port = botResponse.Bot.Port,
                     Name = botResponse.Bot.Name,
                     Status = botResponse.Bot.Status,
                     LastSeen = botResponse.Bot.LastSeen,

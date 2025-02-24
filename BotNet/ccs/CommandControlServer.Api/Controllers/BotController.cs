@@ -32,6 +32,7 @@ namespace CommandControlServer.Api.Controllers
             var botDtos = bots.Select(b => new BotDto
             {
                 BotId = b.BotId,
+                Port = b.Port,
                 Name = b.Name,
                 Status = b.Status,
                 LastSeen = b.LastSeen,
@@ -62,6 +63,8 @@ namespace CommandControlServer.Api.Controllers
         public async Task<ActionResult<Bot>> RegisterBot([FromBody] Bot bot)
         {
             if (bot == null) return BadRequest("Bot is null");
+            if (await _context.Bots.AnyAsync(b => b.Name == bot.Name && b.Name != String.Empty)) return BadRequest("Name already exists");
+            if (await _context.Bots.AnyAsync(b => b.Port == bot.Port)) return BadRequest("Port already exists");
 
             _context.Bots.Add(bot);
             await _context.SaveChangesAsync();
@@ -81,6 +84,7 @@ namespace CommandControlServer.Api.Controllers
             var botDto = new BotDto
             {
                 BotId = bot.BotId,
+                Port = bot.Port,
                 Name = bot.Name,
                 Status = bot.Status,
                 LastSeen = bot.LastSeen,
@@ -110,6 +114,9 @@ namespace CommandControlServer.Api.Controllers
         public async Task<IActionResult> UpdateBot(int id, Bot bot)
         {
             if (id != bot.BotId) return BadRequest();
+            if (!await _context.Bots.AnyAsync(b => b.BotId == id)) return NotFound();
+            if (await _context.Bots.AnyAsync(b => b.Name == bot.Name && b.Name != String.Empty && b.BotId != id)) return BadRequest("Name already exists");
+            if (await _context.Bots.AnyAsync(b => b.Port == bot.Port && b.BotId != id)) return BadRequest("Port already exists");
 
             _context.Entry(bot).State = EntityState.Modified;
             await _context.SaveChangesAsync();

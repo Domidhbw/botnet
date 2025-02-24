@@ -37,6 +37,7 @@ namespace CommandControlServer.Api.Controllers
                 Bots = bg.Bots.Select(b => new BotDto
                 {
                     BotId = b.BotId,
+                    Port = b.Port,
                     Name = b.Name,
                     Status = b.Status,
                     LastSeen = b.LastSeen,
@@ -88,6 +89,7 @@ namespace CommandControlServer.Api.Controllers
                 Bots = botGroup.Bots.Select(b => new BotDto
                 {
                     BotId = b.BotId,
+                    Port = b.Port,
                     Name = b.Name,
                     Status = b.Status,
                     LastSeen = b.LastSeen,
