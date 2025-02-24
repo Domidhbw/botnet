@@ -3,11 +3,15 @@ FROM node:18 AS build
 WORKDIR /app
 COPY commandcontrolserver-frontend/package.json commandcontrolserver-frontend/package-lock.json ./
 RUN npm install
-COPY commandcontrolserver-frontend/ .
-RUN npm run build -- --configuration=production
+COPY commandcontrolserver-frontend/ ./
+RUN npm run build:ssr -- --configuration=production
 
-# Use an Nginx image to serve the Angular app
-FROM nginx:alpine
-COPY --from=build /app/dist /usr/share/nginx/html
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+# Use Node.js to serve SSR Angular App
+FROM node:18-alpine AS server
+WORKDIR /app
+COPY --from=build /app/dist /app/dist
+COPY --from=build /app/package.json /app/package.json
+RUN npm install --omit=dev
+
+EXPOSE 4000
+CMD ["npm", "run", "serve:ssr"]

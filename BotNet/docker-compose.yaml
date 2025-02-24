@@ -28,7 +28,7 @@ services:
       context: ./ccs
       dockerfile: commandcontrolserver-frontend/Dockerfile
     ports:
-      - "4200:80"
+      - "4000:4000"
     depends_on:
       - ccs-api
     networks:
