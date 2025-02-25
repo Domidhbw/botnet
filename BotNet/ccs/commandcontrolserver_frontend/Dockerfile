@@ -1,24 +1,29 @@
-FROM node:18 AS node-builder
+# See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
+
+# This stage is used when running from VS in fast mode (Default for Debug configuration)
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
 WORKDIR /app
-COPY ClientApp/package*.json ./
-RUN npm install
-COPY ClientApp ./
-RUN npm run build --prefix ClientApp
+EXPOSE 80
+EXPOSE 443
 
 
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS dotnet-builder
+# This stage is used to build the service project
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY commandcontrolserver_frontend.csproj ./commandcontrolserver_frontend/
-RUN dotnet restore "commandcontrolserver_frontend/commandcontrolserver_frontend.csproj"
+COPY ["commandcontrolserver_frontend.csproj", "."]
+RUN dotnet restore "./commandcontrolserver_frontend.csproj"
 COPY . .
-WORKDIR "/src/commandcontrolserver_frontend"
-RUN dotnet build -c Release
-FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS final
+WORKDIR "/src/."
+RUN dotnet build "./commandcontrolserver_frontend.csproj" -c $BUILD_CONFIGURATION -o /app/build
+
+# This stage is used to publish the service project to be copied to the final stage
+FROM build AS publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "./commandcontrolserver_frontend.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+# This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
+FROM base AS final
 WORKDIR /app
-COPY --from=dotnet-builder /src/commandcontrolserver_frontend/bin/Release/net7.0/publish/ .
-
-COPY --from=node-builder /app/ClientApp/dist/ClientApp/ /app/wwwroot/
-
-EXPOSE 4000
-
+COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "commandcontrolserver_frontend.dll"]
