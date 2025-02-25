@@ -1,0 +1,31 @@
+bot list componente	
+	- bots anzeigen
+	
+gruppen list componente
+	- gruppen anzeigen
+	
+bot componente 
+	- edit componente pop up editiert namen
+
+gruppen componente
+	- edit gruppen (name der gruppe, bots hinzufügen löschen)
+	
+	
+management von Bots
+	speichert ausgewählte Bots
+	wird genutzt um befehl auszuführen
+	Muss schauen ob Bot bereits in liste ist der aktuell ausgewählten
+	kann gruppe an bots bekommen oder nur ein bot
+	Problem ein Bot ist in zwei gruppen beide gruppen sind ausgewählt dann wird eine gruppe entfernt
+
+service welcher bots bekommt die ausgewählt sind und befehl zum ausführen bekommt 
+dieser sendet an alle bots den befehl 
+speichert die antwort und gibt an terminal weiter
+darf fehler meldung entgegen nehmen und anzeigen das etwas bei diesen bot schief gelaufen ist
+wenn vom terminal befehl kommt automatisch die aktuelle botliste anfragen und nutzen
+
+Terminal component
+	text eingabe und text ausgabe
+	nimmt befehl und gibt in weiter an service
+	soll den text schön aufbereiten für jeden bot
+	soll gefiltert werden können nach bot und gruppen antworten
