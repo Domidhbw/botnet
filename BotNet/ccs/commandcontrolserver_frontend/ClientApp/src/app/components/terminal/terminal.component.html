@@ -1,0 +1,24 @@
+<p>terminal works!</p>
+<div class="terminal">
+  <div class="filter-container">
+    <span>Filter:</span>
+    <div class="dropdown" [class.show]="dropdownVisible">
+      <button class="dropdown-btn" (click)="toggleDropdown($event)">{{ filterBtnLabel }}</button>
+      <div class="dropdown-content" [@dropdownAnimation]>
+        <label class="filter-label" *ngFor="let option of filterOptions">
+          <input type="checkbox" [(ngModel)]="option.checked" (change)="updateFilter()" />
+          {{ option.name }}
+        </label>
+      </div>
+    </div>
+  </div>
+  <div class="terminal-output" #terminalOutput>
+    <p *ngFor="let msg of messages" [style.display]="shouldDisplay(msg) ? '' : 'none'">
+      {{ msg.text }}
+    </p>
+  </div>
+  <div class="terminal-input-container">
+    <input type="text" [(ngModel)]="command" placeholder="Geben Sie einen Befehl ein..." (keyup.enter)="executeCommand()" />
+    <button (click)="executeCommand()">Ausführen</button>
+  </div>
+</div>
