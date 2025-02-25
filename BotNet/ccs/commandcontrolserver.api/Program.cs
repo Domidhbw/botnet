@@ -9,10 +9,10 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite(connect
 
 builder.Services.AddControllers();
 
-builder.Services.AddCors(options => options.AddPolicy(name: "AllowLocalhost4200",
+builder.Services.AddCors(options => options.AddPolicy(name: "AllowLocalhost5003",
                policy =>
                {
-                   policy.WithOrigins("https://localhost:4200", "http://localhost:4200").AllowAnyMethod().AllowAnyHeader();
+                   policy.WithOrigins("https://localhost:5003", "http://localhost:5003").AllowAnyMethod().AllowAnyHeader();
                }));
 
 
@@ -28,7 +28,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.UseHttpsRedirection();
-app.UseCors("AllowLocalhost4200");
+app.UseCors("AllowLocalhost5003");
 app.UseAuthorization();
 app.MapControllers();
 app.UseStaticFiles();
