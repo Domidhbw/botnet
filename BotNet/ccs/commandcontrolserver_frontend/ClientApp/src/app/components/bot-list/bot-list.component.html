@@ -3,7 +3,6 @@
   <ul>
     <li *ngFor="let bot of bots">
       <label class="custom-checkbox" [class.selected]="bot.selected">
-        <input type="checkbox" class="bot-checkbox" [(ngModel)]="bot.selected" (change)="onBotSelectionChange(bot)" />
         <span class="custom-checkbox-indicator"></span>
         <span class="bot-name">{{ bot.name }}</span>
         <div class="right-section">

@@ -8,7 +8,6 @@ export interface Bot {
 
 @Component({
   selector: 'app-bot-list',
-  imports: [],
   templateUrl: './bot-list.component.html',
   styleUrls: ['./bot-list.component.scss']
 })

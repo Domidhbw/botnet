@@ -6,7 +6,6 @@
       <button class="dropdown-btn" (click)="toggleDropdown($event)">{{ filterBtnLabel }}</button>
       <div class="dropdown-content" [@dropdownAnimation]>
         <label class="filter-label" *ngFor="let option of filterOptions">
-          <input type="checkbox" [(ngModel)]="option.checked" (change)="updateFilter()" />
           {{ option.name }}
         </label>
       </div>
@@ -18,7 +17,6 @@
     </p>
   </div>
   <div class="terminal-input-container">
-    <input type="text" [(ngModel)]="command" placeholder="Geben Sie einen Befehl ein..." (keyup.enter)="executeCommand()" />
     <button (click)="executeCommand()">Ausführen</button>
   </div>
 </div>
