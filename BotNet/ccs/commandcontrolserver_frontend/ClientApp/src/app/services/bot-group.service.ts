@@ -12,7 +12,7 @@ export class BotGroupService {
   constructor(private http: HttpClient) {}
 
   getGroups(): Observable<BotGroup[]> {
-    return this.http.get<BotGroup[]>(`${this.apiUrl}botGroup`);
+    return this.http.get<BotGroup[]>(`${this.apiUrl}botGroups`);
   }
 
   getGroup(id: number): Observable<BotGroup> {
