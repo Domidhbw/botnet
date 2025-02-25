@@ -44,16 +44,22 @@ namespace CommandControlServer.Api.Controllers
             }
 
             var responses = new List<BotResponse>();
-
+            // todo: add bots to responses
             foreach (var bot in bots)
             {
                 try
                 {
-                    string url = $"http://localhost:{bot.Port}/api/file/download?filepath={request.FilePath}";
+                    string url = $"http://host.docker.internal:{bot.Port}/api/file/download?filepath={request.FilePath}";
                     var fileBytes = await _httpClient.GetByteArrayAsync(url);
 
                     var savePath = Path.Combine("BotFiles", bot.BotId.ToString());
                     Directory.CreateDirectory(savePath);
+                    try
+                    {
+                        System.IO.File.SetAttributes(savePath, FileAttributes.Normal);
+                    }
+                    catch { }
+
                     var fileName = Path.GetFileName(request.FilePath);
                     var fullFilePath = Path.Combine(savePath, fileName);
                     await System.IO.File.WriteAllBytesAsync(fullFilePath, fileBytes);
@@ -164,6 +170,18 @@ namespace CommandControlServer.Api.Controllers
             }).ToList();
 
             return Ok(botResponseDtos);
+        }
+
+        [HttpGet("download")]
+        public async Task<IActionResult> DownloadStoredFile([FromQuery] string filePath)
+        {
+            if (string.IsNullOrEmpty(filePath)) return NotFound("File path is required.");
+            if (!System.IO.File.Exists(filePath)) return NotFound("File not found.");
+
+            var fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
+            var fileName = Path.GetFileName(filePath);
+
+            return File(fileBytes, "application/octet-stream", fileName);
         }
 
     }
