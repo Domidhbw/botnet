@@ -6,9 +6,10 @@ gruppen list componente
 	
 bot componente 
 	- edit componente pop up editiert namen
+	- bot löschen mit pop up ob man sich sicher ist
 
 gruppen componente
-	- edit gruppen (name der gruppe, bots hinzufügen löschen)
+	- edit gruppen (name der gruppe, bots hinzufügen löschen, gruppe löschen mit pop up ob man sich sicher ist)
 	
 	
 management von Bots
@@ -29,3 +30,23 @@ Terminal component
 	nimmt befehl und gibt in weiter an service
 	soll den text schön aufbereiten für jeden bot
 	soll gefiltert werden können nach bot und gruppen antworten
+	
+API BEFEHLE
+	
+einmal alle bots holen und damit die bots erstellen diese dann in die bot liste einfüttern
+
+einmal alle gruppen holen und damit die gruppen erstellen und in die gruppen liste einfüttern
+
+name eines bots ändern
+
+name einer gruppe ändern 
+
+bots die in einer gruppe sind ändern
+
+gruppe löschen
+
+bot löschen
+
+cmd befehl an einen bot senden
+
+filpath an einen bot senden zum herunterladen einer datei
