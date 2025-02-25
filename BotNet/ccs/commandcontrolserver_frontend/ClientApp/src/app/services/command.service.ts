@@ -5,6 +5,7 @@ import { catchError } from 'rxjs/operators';
 import { BotResponse } from '../models/bot-response.model';
 import { BotManagementService } from './bot-management.service';
 import { Bot } from '../models/bot.model';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -23,16 +24,35 @@ export class CommandService {
 
     // Für jeden ausgewählten Bot wird ein Request abgesetzt.
     const requests = bots.map(bot => {
-      return this.http.get<BotResponse>(
-        `${this.commandUrl}?cmd=${encodeURIComponent(cmd)}&botId=${bot.botId}`
+      // Hier wird der HTTP-Request so konfiguriert, dass er reinen Text zurückgibt.
+      return this.http.get(
+        `${this.commandUrl}?cmd=${encodeURIComponent(cmd)}&botId=${bot.botId}`,
+        { responseType: 'text' }
       ).pipe(
+        // Den Text in ein BotResponse-Objekt umwandeln.
+      map((text: string) => {
+          const response: BotResponse = {
+            botResponseId: 0,
+            botId: bot.botId,
+            responseType: 'command',
+            success: true,
+            timestamp: new Date().toISOString(),
+            // Wir speichern den reinen Text hier in der neuen Property "output"
+            output: text,
+            filePath: '',
+            fileName: ''
+          };
+          return response;
+        }),
         catchError(err => {
+          // Bei einem Fehler wird ein Fehlerobjekt zurückgegeben.
           return of({
             botResponseId: 0,
             botId: bot.botId,
             responseType: 'command',
             success: false,
             timestamp: new Date().toISOString(),
+            output: `Error: ${err.message}`,
             filePath: '',
             fileName: ''
           } as BotResponse);
@@ -40,6 +60,7 @@ export class CommandService {
       );
     });
 
+    // Alle Requests werden parallel ausgeführt.
     return forkJoin(requests);
   }
 }

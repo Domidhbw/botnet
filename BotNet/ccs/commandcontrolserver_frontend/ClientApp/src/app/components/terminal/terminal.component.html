@@ -13,6 +13,7 @@ Bot ID: {{ resp.botId }}
 Timestamp: {{ resp.timestamp }}
 Status: {{ resp.success ? 'Success' : 'Error' }}
 Response Type: {{ resp.responseType }}
+{{ resp.responseType === 'command' ? ('Output: ' + resp.output) : '' }}
 {{ resp.responseType === 'file' ? ('Dateiname: ' + resp.fileName) : '' }}
   </pre>
 </div>

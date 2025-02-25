@@ -9,12 +9,12 @@ builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddCors(options => options.AddPolicy(name: "AllowAngularApp",
     policy =>
     {
-        policy.WithOrigins("https://localhost:5003", "http://localhost:5003").AllowAnyMethod().AllowAnyHeader();
+        policy.WithOrigins("https://localhost:5003", "http://localhost:5003", "https://localhost:5002", "http://localhost:5002").AllowAnyMethod().AllowAnyHeader();
     }));
 var app = builder.Build();
 app.UseCors("AllowAngularApp");
 app.MapControllers();
-
+app.UseRouting();
 app.Run();
 
 

@@ -123,7 +123,6 @@ namespace CommandControlServer.Api.Controllers
                 {
                     string url = $"http://localhost:{bot.Port}/api/command/run?cmd={request.Command}";
                     var responseContent = await _httpClient.GetStringAsync(url);
-
                     responses.Add(new BotResponse
                     {
                         BotId = bot.BotId,
