@@ -3,13 +3,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllersWithViews();
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowLocalhost4200",
-        builder => builder.WithOrigins("http://localhost:4200")
-                          .AllowAnyHeader()
-                          .AllowAnyMethod());
-});
+builder.Services.AddCors(options => options.AddPolicy(name: "AllowLocalhost4200",
+               policy =>
+               {
+                   policy.WithOrigins("https://localhost:4200", "http://localhost:4200").AllowAnyMethod().AllowAnyHeader();
+               }));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -9,13 +9,12 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite(connect
 
 builder.Services.AddControllers();
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowLocalhost4200",
-        builder => builder.WithOrigins("http://localhost:4200")
-                          .AllowAnyHeader()
-                          .AllowAnyMethod());
-});
+builder.Services.AddCors(options => options.AddPolicy(name: "AllowLocalhost4200",
+               policy =>
+               {
+                   policy.WithOrigins("https://localhost:4200", "http://localhost:4200").AllowAnyMethod().AllowAnyHeader();
+               }));
+
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -32,5 +31,7 @@ app.UseHttpsRedirection();
 app.UseCors("AllowLocalhost4200");
 app.UseAuthorization();
 app.MapControllers();
+app.UseStaticFiles();
+app.UseRouting();
 
 app.Run();
