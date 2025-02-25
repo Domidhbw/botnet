@@ -25,14 +25,16 @@ services:
 
   ccs-frontend:
     build:
-      context: ./ccs
-      dockerfile: commandcontrolserver-frontend/Dockerfile
+      context: ./ccs/commandcontrolserver_frontend
+      dockerfile: Dockerfile
     ports:
-      - "4000:4000"
+      - "4000:4000"  
     depends_on:
-      - ccs-api
+      - ccs-api  
     networks:
       - botnet-network
+    environment:
+      - NODE_ENV=production 
 
 networks:
   botnet-network:

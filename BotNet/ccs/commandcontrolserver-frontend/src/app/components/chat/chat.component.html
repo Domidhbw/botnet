@@ -1,9 +1,0 @@
-<div class="terminal">
-  <div class="terminal-output" #output>
-    <p *ngFor="let message of messages">{{ message }}</p>
-  </div>
-  <div class="terminal-input-container">
-    <input [(ngModel)]="command" placeholder="Geben Sie einen Befehl ein..." />
-    <button (click)="executeCommand()">Ausführen</button>
-  </div>
-</div>

@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/server",
+    "module": "commonjs",
+    "target": "es2016",
+    "types": [
+      "node"
+    ]
+  },
+  "include": [
+    "src/main.server.ts",
+    "src/**/*.d.ts"
+  ]
+}
