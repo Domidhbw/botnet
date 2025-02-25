@@ -121,7 +121,7 @@ namespace CommandControlServer.Api.Controllers
             {
                 try
                 {
-                    string url = $"http://localhost:{bot.Port}/api/command/run?cmd={request.Command}";
+                    string url = $"http://host.docker.internal:{bot.Port}/api/command/run?cmd={request.Command}";
                     var responseContent = await _httpClient.GetStringAsync(url);
                     responses.Add(new BotResponse
                     {
