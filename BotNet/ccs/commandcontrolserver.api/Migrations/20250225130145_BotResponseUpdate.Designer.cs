@@ -3,6 +3,7 @@ using System;
 using CommandControlServer.Api;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CommandControlServer.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250225130145_BotResponseUpdate")]
+    partial class BotResponseUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.2");
@@ -90,19 +93,11 @@ namespace CommandControlServer.Api.Migrations
                     b.Property<int>("BotId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Command")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("FileName")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("FilePath")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ResponseContent")
                         .IsRequired()
                         .HasColumnType("TEXT");
 

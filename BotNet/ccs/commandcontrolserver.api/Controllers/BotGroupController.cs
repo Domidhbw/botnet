@@ -48,8 +48,9 @@ namespace CommandControlServer.Api.Controllers
                         BotResponseId = br.BotResponseId,
                         BotId = br.BotId,
                         ResponseType = br.ResponseType,
-                        Data = br.Data,
+                        Success = br.Success,
                         Timestamp = br.Timestamp,
+                        FilePath = br.FilePath,
                         FileName = br.FileName
                     }).ToList(),
                     BotGroups = b.BotGroups.Select(bg => new BotGroupDto
@@ -67,6 +68,9 @@ namespace CommandControlServer.Api.Controllers
         public async Task<ActionResult<BotGroup>> AddBotGroup([FromBody] BotGroup botGroup)
         {
             if (botGroup == null) return BadRequest("BotGroup is null");
+            if (string.IsNullOrEmpty(botGroup.Name)) return BadRequest("BotGroup name is required");
+            if (await _context.BotGroups.AnyAsync(bg => bg.Name == botGroup.Name)) return BadRequest("BotGroup name already exists");
+            
             _context.BotGroups.Add(botGroup);
             await _context.SaveChangesAsync();
             return CreatedAtAction("GetBotGroup", new { id = botGroup.BotGroupId }, botGroup);
@@ -100,8 +104,9 @@ namespace CommandControlServer.Api.Controllers
                         BotResponseId = br.BotResponseId,
                         BotId = br.BotId,
                         ResponseType = br.ResponseType,
-                        Data = br.Data,
+                        Success = br.Success,
                         Timestamp = br.Timestamp,
+                        FilePath = br.FilePath,
                         FileName = br.FileName
                     }).ToList(),
                     BotGroups = b.BotGroups.Select(bg => new BotGroupDto
@@ -119,6 +124,7 @@ namespace CommandControlServer.Api.Controllers
         [HttpPut("botGroup/{id}")]
         public async Task<IActionResult> UpdateBotGroup(int id, [FromBody] BotGroup botGroup)
         {
+            // TODO: Prevent that PUT overwrites everything
             if (id != botGroup.BotGroupId) return BadRequest();
             _context.Entry(botGroup).State = EntityState.Modified;
             await _context.SaveChangesAsync();

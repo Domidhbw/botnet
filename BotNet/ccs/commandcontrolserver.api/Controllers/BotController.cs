@@ -43,8 +43,9 @@ namespace CommandControlServer.Api.Controllers
                     BotResponseId = br.BotResponseId,
                     BotId = br.BotId,
                     ResponseType = br.ResponseType,
-                    Data = br.Data,
+                    Success = br.Success,
                     Timestamp = br.Timestamp,
+                    FilePath = br.FilePath,
                     FileName = br.FileName
                 }).ToList(),
                 BotGroups = b.BotGroups.Select(bg => new BotGroupDto
@@ -65,7 +66,9 @@ namespace CommandControlServer.Api.Controllers
             if (bot == null) return BadRequest("Bot is null");
             if (await _context.Bots.AnyAsync(b => b.Name == bot.Name && b.Name != String.Empty)) return BadRequest("Name already exists");
             if (await _context.Bots.AnyAsync(b => b.Port == bot.Port)) return BadRequest("Port already exists");
-
+            var remoteIp = HttpContext.Connection.RemoteIpAddress?.ToString();
+            var remotePort = HttpContext.Connection.RemotePort;
+            Console.WriteLine($"Remote IP: {remoteIp}, Remote Port: {remotePort}");
             _context.Bots.Add(bot);
             await _context.SaveChangesAsync();
             return CreatedAtAction("GetBot", new { id = bot.BotId }, bot);
@@ -95,8 +98,9 @@ namespace CommandControlServer.Api.Controllers
                     BotResponseId = br.BotResponseId,
                     BotId = br.BotId,
                     ResponseType = br.ResponseType,
-                    Data = br.Data,
+                    Success = br.Success,
                     Timestamp = br.Timestamp,
+                    FilePath = br.FilePath,
                     FileName = br.FileName
                 }).ToList(),
                 BotGroups = bot.BotGroups.Select(bg => new BotGroupDto
@@ -111,8 +115,10 @@ namespace CommandControlServer.Api.Controllers
         }
 
         [HttpPut("bot/{id}")]
-        public async Task<IActionResult> UpdateBot(int id, Bot bot)
+        public async Task<IActionResult> UpdateBot(int id, [FromBody] Bot bot)
         {
+            // TODO: Validation on update
+            // Example Body: 
             if (id != bot.BotId) return BadRequest();
             if (!await _context.Bots.AnyAsync(b => b.BotId == id)) return NotFound();
             if (await _context.Bots.AnyAsync(b => b.Name == bot.Name && b.Name != String.Empty && b.BotId != id)) return BadRequest("Name already exists");
@@ -128,6 +134,7 @@ namespace CommandControlServer.Api.Controllers
         [HttpDelete("bot/{id}")]
         public async Task<IActionResult> DeleteBot(int id)
         {
+            // TODO: Update responses and bot groups
             var bot = await _context.Bots.FindAsync(id);
             if (bot == null) return NotFound();
 

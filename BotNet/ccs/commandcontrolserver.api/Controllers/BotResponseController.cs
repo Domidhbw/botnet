@@ -9,8 +9,8 @@ namespace CommandControlServer.Api.Controllers
     {
         public int BotId { get; set; }
         public string ResponseType { get; set; } = "file";
-        public string Data { get; set; } = string.Empty;
         public string FileName { get; set; } = string.Empty;
+        public string FilePath { get; set; } = string.Empty;
     }
 
     [Route("api/[controller]")]
@@ -35,8 +35,9 @@ namespace CommandControlServer.Api.Controllers
                 BotResponseId = br.BotResponseId,
                 BotId = br.BotId,
                 ResponseType = br.ResponseType,
-                Data = br.Data,
+                Success = br.Success,
                 Timestamp = br.Timestamp,
+                FilePath = br.FilePath,
                 FileName = br.FileName,
                 Bot = new BotDto
                 {
@@ -73,8 +74,9 @@ namespace CommandControlServer.Api.Controllers
                 BotResponseId = botResponse.BotResponseId,
                 BotId = botResponse.BotId,
                 ResponseType = botResponse.ResponseType,
-                Data = botResponse.Data,
+                Success = botResponse.Success,
                 Timestamp = botResponse.Timestamp,
+                FilePath = botResponse.FilePath,
                 FileName = botResponse.FileName,
                 Bot = new BotDto
                 {
@@ -111,8 +113,9 @@ namespace CommandControlServer.Api.Controllers
                 BotResponseId = botResponse.BotResponseId,
                 BotId = botResponse.BotId,
                 ResponseType = botResponse.ResponseType,
-                Data = botResponse.Data,
+                Success = botResponse.Success,
                 Timestamp = botResponse.Timestamp,
+                FilePath = botResponse.FilePath,
                 FileName = botResponse.FileName,
                 Bot = new BotDto
                 {

@@ -3,6 +3,10 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
+# Angular
+.angular/
+dist/
+
 # User-specific files
 *.rsuser
 *.suo
@@ -400,7 +404,7 @@ FodyWeavers.xsd
 *.sln.iml
 
 # SQLite database
-*.db
-*.db-wal
-*.db-shm
+#*.db
+#*.db-wal
+#*.db-shm
 
