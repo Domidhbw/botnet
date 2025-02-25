@@ -1,0 +1,7 @@
+<h2>Bot Liste</h2>
+<ul>
+  <li *ngFor="let bot of bots">
+    {{ bot.name }} (Status: {{ bot.status }})
+    <button (click)="selectBot(bot)">Select</button>
+  </li>
+</ul>

@@ -1,0 +1,18 @@
+<h2>Terminal</h2>
+<div>
+  <input [(ngModel)]="command" placeholder="Befehl eingeben" />
+  <button (click)="sendCommand()">Senden</button>
+</div>
+<div>
+  <label>Filter nach Bot ID: </label>
+  <input type="number" [(ngModel)]="filterBotId" placeholder="Bot ID" />
+</div>
+<div *ngFor="let resp of filteredResponses()">
+  <pre>
+Bot ID: {{ resp.botId }}
+Timestamp: {{ resp.timestamp }}
+Status: {{ resp.success ? 'Success' : 'Error' }}
+Response Type: {{ resp.responseType }}
+{{ resp.responseType === 'file' ? ('Dateiname: ' + resp.fileName) : '' }}
+  </pre>
+</div>

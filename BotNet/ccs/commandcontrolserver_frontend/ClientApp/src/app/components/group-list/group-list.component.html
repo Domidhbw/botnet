@@ -1,0 +1,7 @@
+<h2>Gruppen Liste</h2>
+<ul>
+  <li *ngFor="let group of groups">
+    {{ group.name }} (Bots: {{ group.bots.length }})
+    <button (click)="selectGroupBots(group)">Select Group Bots</button>
+  </li>
+</ul>

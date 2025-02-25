@@ -1,0 +1,13 @@
+<div>
+    <div *ngIf="!editing">
+      <span>{{ bot.name }}</span>
+      <button (click)="enableEdit()">Edit</button>
+      <button (click)="confirmDelete()">Delete</button>
+    </div>
+    <div *ngIf="editing">
+      <input [(ngModel)]="newName" />
+      <button (click)="saveName()">Save</button>
+      <button (click)="editing = false">Cancel</button>
+    </div>
+  </div>
+  
