@@ -61,14 +61,21 @@ namespace CommandControlServer.Api.Controllers
         }
 
         [HttpPost("bot")]
-        public async Task<ActionResult<Bot>> RegisterBot([FromBody] Bot bot)
+        public async Task<ActionResult<Bot>> RegisterBot()
         {
-            if (bot == null) return BadRequest("Bot is null");
-            if (await _context.Bots.AnyAsync(b => b.Name == bot.Name && b.Name != String.Empty)) return BadRequest("Name already exists");
-            if (await _context.Bots.AnyAsync(b => b.Port == bot.Port)) return BadRequest("Port already exists");
-            var remoteIp = HttpContext.Connection.RemoteIpAddress?.ToString();
+            var remoteIp = HttpContext.Connection.RemoteIpAddress?.ToString(); 
             var remotePort = HttpContext.Connection.RemotePort;
+            if (await _context.Bots.AnyAsync(b => b.Port == remotePort)) return BadRequest("Port already exists");
             Console.WriteLine($"Remote IP: {remoteIp}, Remote Port: {remotePort}");
+            var bot = new Bot
+            {
+                Port = remotePort,
+                Name = "",
+                Status = "online",
+                LastSeen = DateTimeOffset.UtcNow,
+                CreatedAt = DateTimeOffset.UtcNow,
+                UpdatedAt = DateTimeOffset.UtcNow
+            };
             _context.Bots.Add(bot);
             await _context.SaveChangesAsync();
             return CreatedAtAction("GetBot", new { id = bot.BotId }, bot);
@@ -115,12 +122,24 @@ namespace CommandControlServer.Api.Controllers
         }
 
         [HttpPut("bot/{id}")]
-        public async Task<IActionResult> UpdateBot(int id, [FromBody] Bot bot)
+        public async Task<IActionResult> UpdateBot(int id, [FromBody] BotDto botDto)
         {
-            // TODO: Validation on update
-            // Example Body: 
+            var oldBot = await _context.Bots.FindAsync(id);
+            if (oldBot == null) return NotFound();
+            if (id != oldBot.BotId) return BadRequest();
+
+            var bot = new Bot
+            {
+                BotId = botDto.BotId,
+                Port = botDto.Port != 0 ? botDto.Port : oldBot.Port,
+                Name = botDto.Name ?? oldBot.Name,
+                Status = botDto.Status ?? oldBot.Status,
+                LastSeen = botDto.LastSeen != DateTimeOffset.MinValue ? botDto.LastSeen : oldBot.LastSeen,
+                CreatedAt = botDto.CreatedAt != DateTimeOffset.MinValue ? botDto.CreatedAt : oldBot.CreatedAt,
+                UpdatedAt = DateTimeOffset.UtcNow
+            };
+
             if (id != bot.BotId) return BadRequest();
-            if (!await _context.Bots.AnyAsync(b => b.BotId == id)) return NotFound();
             if (await _context.Bots.AnyAsync(b => b.Name == bot.Name && b.Name != String.Empty && b.BotId != id)) return BadRequest("Name already exists");
             if (await _context.Bots.AnyAsync(b => b.Port == bot.Port && b.BotId != id)) return BadRequest("Port already exists");
 
@@ -134,7 +153,6 @@ namespace CommandControlServer.Api.Controllers
         [HttpDelete("bot/{id}")]
         public async Task<IActionResult> DeleteBot(int id)
         {
-            // TODO: Update responses and bot groups
             var bot = await _context.Bots.FindAsync(id);
             if (bot == null) return NotFound();
 
