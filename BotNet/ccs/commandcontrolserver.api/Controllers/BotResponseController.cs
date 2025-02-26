@@ -44,8 +44,7 @@ namespace CommandControlServer.Api.Controllers
                     BotId = br.Bot.BotId,
                     Port = br.Bot.Port,
                     Name = br.Bot.Name,
-                    Status = br.Bot.Status,
-                    LastSeen = br.Bot.LastSeen,
+                    LastAction = br.Bot.LastAction,
                     CreatedAt = br.Bot.CreatedAt,
                     UpdatedAt = br.Bot.UpdatedAt,
                     BotGroups = br.Bot.BotGroups.Select(bg => new BotGroupDto
@@ -83,8 +82,7 @@ namespace CommandControlServer.Api.Controllers
                     BotId = botResponse.Bot.BotId,
                     Port = botResponse.Bot.Port,
                     Name = botResponse.Bot.Name,
-                    Status = botResponse.Bot.Status,
-                    LastSeen = botResponse.Bot.LastSeen,
+                    LastAction = botResponse.Bot.LastAction,
                     CreatedAt = botResponse.Bot.CreatedAt,
                     UpdatedAt = botResponse.Bot.UpdatedAt,
                     BotGroups = botResponse.Bot.BotGroups.Select(bg => new BotGroupDto
@@ -122,8 +120,7 @@ namespace CommandControlServer.Api.Controllers
                     BotId = botResponse.Bot.BotId,
                     Port = botResponse.Bot.Port,
                     Name = botResponse.Bot.Name,
-                    Status = botResponse.Bot.Status,
-                    LastSeen = botResponse.Bot.LastSeen,
+                    LastAction = botResponse.Bot.LastAction,
                     CreatedAt = botResponse.Bot.CreatedAt,
                     UpdatedAt = botResponse.Bot.UpdatedAt,
                     BotGroups = botResponse.Bot.BotGroups.Select(bg => new BotGroupDto

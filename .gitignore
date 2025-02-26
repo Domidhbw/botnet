@@ -404,7 +404,7 @@ FodyWeavers.xsd
 *.sln.iml
 
 # SQLite database
-#*.db
-#*.db-wal
-#*.db-shm
+*.db
+*.db-wal
+*.db-shm
 

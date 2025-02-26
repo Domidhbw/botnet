@@ -39,8 +39,7 @@ namespace CommandControlServer.Api.Controllers
                     BotId = b.BotId,
                     Port = b.Port,
                     Name = b.Name,
-                    Status = b.Status,
-                    LastSeen = b.LastSeen,
+                    LastAction = b.LastAction,
                     CreatedAt = b.CreatedAt,
                     UpdatedAt = b.UpdatedAt,
                     Responses = b.Responses.Select(br => new BotResponseDto
@@ -95,8 +94,7 @@ namespace CommandControlServer.Api.Controllers
                     BotId = b.BotId,
                     Port = b.Port,
                     Name = b.Name,
-                    Status = b.Status,
-                    LastSeen = b.LastSeen,
+                    LastAction = b.LastAction,
                     CreatedAt = b.CreatedAt,
                     UpdatedAt = b.UpdatedAt,
                     Responses = b.Responses.Select(br => new BotResponseDto
@@ -121,12 +119,16 @@ namespace CommandControlServer.Api.Controllers
             return Ok(botGroupDto);
         }
 
-        [HttpPut("botGroup/{id}")]
-        public async Task<IActionResult> UpdateBotGroup(int id, [FromBody] BotGroup botGroup)
+        [HttpPut("editName/{id}")]
+        public async Task<IActionResult> EditName(int id, [FromBody] string name)
         {
-            // TODO: Prevent that PUT overwrites everything
-            if (id != botGroup.BotGroupId) return BadRequest();
-            _context.Entry(botGroup).State = EntityState.Modified;
+            if (string.IsNullOrWhiteSpace(name)) return BadRequest("Name is required");
+            if (await _context.BotGroups.AnyAsync(bg => bg.Name == name && bg.BotGroupId != id)) return BadRequest("Name already exists");
+
+            var botGroup = await _context.BotGroups.FindAsync(id);
+            if (botGroup == null) return NotFound();
+            
+            botGroup.Name = name;
             await _context.SaveChangesAsync();
             return NoContent();
         }

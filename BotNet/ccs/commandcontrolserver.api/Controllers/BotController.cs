@@ -34,8 +34,7 @@ namespace CommandControlServer.Api.Controllers
                 BotId = b.BotId,
                 Port = b.Port,
                 Name = b.Name,
-                Status = b.Status,
-                LastSeen = b.LastSeen,
+                LastAction = b.LastAction,
                 CreatedAt = b.CreatedAt,
                 UpdatedAt = b.UpdatedAt,
                 Responses = b.Responses.Select(br => new BotResponseDto
@@ -71,14 +70,14 @@ namespace CommandControlServer.Api.Controllers
             {
                 Port = remotePort,
                 Name = "",
-                Status = "online",
-                LastSeen = DateTimeOffset.UtcNow,
+                LastAction = DateTimeOffset.UtcNow,
                 CreatedAt = DateTimeOffset.UtcNow,
                 UpdatedAt = DateTimeOffset.UtcNow
             };
             _context.Bots.Add(bot);
             await _context.SaveChangesAsync();
-            return CreatedAtAction("GetBot", new { id = bot.BotId }, bot);
+
+            return Ok(bot);
         }
 
         [HttpGet("bot/{id}")]
@@ -96,8 +95,7 @@ namespace CommandControlServer.Api.Controllers
                 BotId = bot.BotId,
                 Port = bot.Port,
                 Name = bot.Name,
-                Status = bot.Status,
-                LastSeen = bot.LastSeen,
+                LastAction = bot.LastAction,
                 CreatedAt = bot.CreatedAt,
                 UpdatedAt = bot.UpdatedAt,
                 Responses = bot.Responses.Select(br => new BotResponseDto
@@ -121,29 +119,15 @@ namespace CommandControlServer.Api.Controllers
             return Ok(botDto);
         }
 
-        [HttpPut("bot/{id}")]
-        public async Task<IActionResult> UpdateBot(int id, [FromBody] BotDto botDto)
+        [HttpPut("editName/{id}")]
+        public async Task<IActionResult> EditName(int id, [FromBody] string name)
         {
-            var oldBot = await _context.Bots.FindAsync(id);
-            if (oldBot == null) return NotFound();
-            if (id != oldBot.BotId) return BadRequest();
+            if (!string.IsNullOrWhiteSpace(name) && _context.Bots.Any(b => b.Name == name && b.BotId != id)) return BadRequest("Name already exists");
 
-            var bot = new Bot
-            {
-                BotId = botDto.BotId,
-                Port = botDto.Port != 0 ? botDto.Port : oldBot.Port,
-                Name = botDto.Name ?? oldBot.Name,
-                Status = botDto.Status ?? oldBot.Status,
-                LastSeen = botDto.LastSeen != DateTimeOffset.MinValue ? botDto.LastSeen : oldBot.LastSeen,
-                CreatedAt = botDto.CreatedAt != DateTimeOffset.MinValue ? botDto.CreatedAt : oldBot.CreatedAt,
-                UpdatedAt = DateTimeOffset.UtcNow
-            };
-
-            if (id != bot.BotId) return BadRequest();
-            if (await _context.Bots.AnyAsync(b => b.Name == bot.Name && b.Name != String.Empty && b.BotId != id)) return BadRequest("Name already exists");
-            if (await _context.Bots.AnyAsync(b => b.Port == bot.Port && b.BotId != id)) return BadRequest("Port already exists");
-
-            _context.Entry(bot).State = EntityState.Modified;
+            var bot = await _context.Bots.FindAsync(id);
+            if (bot == null) return NotFound();
+            bot.Name = name;
+            bot.UpdatedAt = DateTimeOffset.UtcNow;
             await _context.SaveChangesAsync();
             return NoContent();
         }
@@ -175,6 +159,7 @@ namespace CommandControlServer.Api.Controllers
                 .ToListAsync();
 
             bot.BotGroups = botGroups;
+            bot.UpdatedAt = DateTimeOffset.UtcNow;
             await _context.SaveChangesAsync();
 
             return NoContent();
