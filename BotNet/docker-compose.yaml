@@ -6,7 +6,7 @@ services:
       context: ./bot
       dockerfile: Bot.Api/Dockerfile
     ports:
-      - "5001:8080"
+      - "8080"
     networks:
       - botnet-network
     environment:
