@@ -2,51 +2,42 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { forkJoin, Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { BotResponse } from '../models/bot-response.model';
 import { BotManagementService } from './bot-management.service';
 import { Bot } from '../models/bot.model';
-import { map } from 'rxjs/operators';
+import { BotResponse } from '../models/bot-response.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CommandService {
+  // API endpoints.
   private commandUrl = 'http://localhost:5002/api/Data/execute/command';
+  private fileDownloadUrl = 'http://localhost:5002/api/Data/execute/file';
 
-  constructor(private http: HttpClient, private botManagement: BotManagementService) {}
+  constructor(
+    private http: HttpClient,
+    private botManagement: BotManagementService
+  ) {}
 
-  executeCommand(cmd: string): Observable<BotResponse[]> {
+  executeCommand(command: string): Observable<BotResponse[]> {
     const bots: Bot[] = this.botManagement.getSelectedBots();
 
     if (!bots || bots.length === 0) {
       return of([]);
     }
 
-    // Für jeden ausgewählten Bot wird ein Request abgesetzt.
-    const requests = bots.map(bot => {
-      // Hier wird der HTTP-Request so konfiguriert, dass er reinen Text zurückgibt.
-      return this.http.get(
-        `${this.commandUrl}?cmd=${encodeURIComponent(cmd)}&botId=${bot.botId}`,
-        { responseType: 'text' }
-      ).pipe(
-        // Den Text in ein BotResponse-Objekt umwandeln.
-      map((text: string) => {
-          const response: BotResponse = {
-            botResponseId: 0,
-            botId: bot.botId,
-            responseType: 'command',
-            success: true,
-            timestamp: new Date().toISOString(),
-            // Wir speichern den reinen Text hier in der neuen Property "output"
-            output: text,
-            filePath: '',
-            fileName: ''
-          };
-          return response;
-        }),
+    const botIds = bots.map(bot => bot.botId);
+    const payload = {
+      botIds: botIds,
+      command: command
+    };
+
+    return this.http.post<BotResponse[]>(this.commandUrl, payload)
+      .pipe(
         catchError(err => {
-          // Bei einem Fehler wird ein Fehlerobjekt zurückgegeben.
-          return of({
+          console.error('Error executing command', err);
+          // Return an error response for each selected bot.
+          const errorResponses = bots.map(bot => ({
             botResponseId: 0,
             botId: bot.botId,
             responseType: 'command',
@@ -55,12 +46,44 @@ export class CommandService {
             output: `Error: ${err.message}`,
             filePath: '',
             fileName: ''
-          } as BotResponse);
+          } as BotResponse));
+          return of(errorResponses);
         })
       );
-    });
+  }
 
-    // Alle Requests werden parallel ausgeführt.
-    return forkJoin(requests);
+  downloadFile(filePath: string): void {
+    const bots: Bot[] = this.botManagement.getSelectedBots();
+
+    if (!bots || bots.length === 0) {
+      console.warn('No bots selected.');
+      return;
+    }
+
+    const botIds = bots.map(bot => bot.botId);
+    const payload = {
+      botIds: botIds,
+      filePath: filePath
+    };
+
+    this.http.post(this.fileDownloadUrl, payload, { responseType: 'blob' })
+      .pipe(
+        catchError(err => {
+          console.error('Error downloading file', err);
+          return of(null);
+        })
+      )
+      .subscribe(blob => {
+        if (blob) {
+          // Create a temporary link element and trigger the download.
+          const a = document.createElement('a');
+          const objectUrl = URL.createObjectURL(blob);
+          a.href = objectUrl;
+          // Extract a filename from the provided filePath or default to 'download'
+          a.download = filePath.split('/').pop() || 'download';
+          a.click();
+          URL.revokeObjectURL(objectUrl);
+        }
+      });
   }
 }

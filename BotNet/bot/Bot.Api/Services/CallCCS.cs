@@ -8,7 +8,7 @@ namespace Bot.Api.Services
         {
             await Task.Delay(TimeSpan.FromSeconds(10));
 
-            string apiUrl = "http://localhost:5002/api/Bot/bot";
+            string apiUrl = "http://host.docker.internal:5002/api/Bot/bot";
             string jsonData = "{\"message\":\"Hello, API!\"}";
             int maxAttempts = 5;
             var random = new Random();

@@ -9,23 +9,35 @@ import { BotResponse } from '../../models/bot-response.model';
 })
 export class TerminalComponent {
   command: string = '';
+  filePath: string = '';
   responses: BotResponse[] = [];
-  filterBotId: number | null = null; // Optional: Filter nach Bot-ID
+  filterBotId: number | null = null; // Filter by Bot ID
 
-  constructor(private commandService: CommandService) {}
+  constructor(
+    private commandService: CommandService,
+  ) {}
+
 
   sendCommand() {
     if (!this.command.trim()) {
       return;
     }
-    // Sobald ein Befehl gesendet wird, wird der CommandService aufgerufen.
-    // Dieser holt sich die aktuell ausgewählten Bots aus dem BotManagementService
-    // und sendet den Befehl an jeden Bot.
     this.commandService.executeCommand(this.command).subscribe(resps => {
+      // Append or replace responses as desired.
       this.responses = resps;
     });
     this.command = '';
   }
+
+
+  downloadFile() {
+    if (!this.filePath.trim()) {
+      return;
+    }
+    this.commandService.downloadFile(this.filePath);
+    this.filePath = '';
+  }
+
 
   filteredResponses(): BotResponse[] {
     if (this.filterBotId !== null) {
