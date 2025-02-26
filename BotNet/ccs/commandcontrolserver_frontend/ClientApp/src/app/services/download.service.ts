@@ -10,12 +10,12 @@ import { map } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
-export class CommandService {
-  private commandUrl = 'http://localhost:5002/api/Data/execute/command';
+export class DownloadService {
+  private downloadUrl = 'http://localhost:5002/api/Data/execute/command';
 
   constructor(private http: HttpClient, private botManagement: BotManagementService) {}
 
-  executeCommand(cmd: string): Observable<BotResponse[]> {
+  executedownload(cmd: string): Observable<BotResponse[]> {
     const bots: Bot[] = this.botManagement.getSelectedBots();
 
     if (!bots || bots.length === 0) {
@@ -26,7 +26,7 @@ export class CommandService {
     const requests = bots.map(bot => {
       // Hier wird der HTTP-Request so konfiguriert, dass er reinen Text zurückgibt.
       return this.http.get(
-        `${this.commandUrl}?cmd=${encodeURIComponent(cmd)}&botId=${bot.botId}`,
+        `${this.downloadUrl}?cmd=${encodeURIComponent(cmd)}&botId=${bot.botId}`,
         { responseType: 'text' }
       ).pipe(
         // Den Text in ein BotResponse-Objekt umwandeln.
