@@ -22,11 +22,17 @@ export class BotEditDialogComponent {
   }
 
   saveName(): void {
-    this.botService.updateBot(this.botId, this.newName).subscribe(updatedBot => {
-      // Close the dialog and return the updated bot data
-      this.dialogRef.close(updatedBot);
+    this.botService.updateBot(this.botId, this.newName).subscribe({
+      next: () => {
+        this.dialogRef.close({ name: this.newName, botId: this.botId });
+      },
+      error: (err) => {
+        console.error('Error updating bot name:', err);
+        alert('There was an error updating the bot name.');
+      }
     });
   }
+  
 
   deleteBot(): void {
     if (confirm('Are you sure you want to delete this bot?')) {
