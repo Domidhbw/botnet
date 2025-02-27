@@ -1,5 +1,18 @@
 <div class="bot-list">
-  <h2>Bot Liste</h2>
+  <div class="bot-list-header">
+    <h2>Bot Liste</h2>
+    <button class="reload-btn" (click)="reloadBots()" title="Reload Bot List">
+      <svg width="24" height="24" viewBox="0 0 24 24">
+        <path
+          fill="#00ff99"
+          d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6
+             s-2.69 6-6 6-6-2.69-6-6H4c0 4.41 3.59 8
+             8 8s8-3.59 8-8-3.59-8-8-8z"
+        />
+      </svg>
+    </button>
+  </div>
+
   <ul>
     <li *ngFor="let bot of bots">
       <app-bot

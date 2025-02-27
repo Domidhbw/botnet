@@ -31,13 +31,18 @@ export class BotListComponent implements OnInit {
     const botIdStr = bot.botId.toString();
     const idx = this.selectedBotIds.indexOf(botIdStr);
     if (idx === -1) {
-      // Falls nicht enthalten -> hinzufügen
       this.selectedBotIds.push(botIdStr);
       this.botManagement.addBot(bot);
     } else {
-      // Falls enthalten -> entfernen
       this.selectedBotIds.splice(idx, 1);
-      // Optional: this.botManagement.removeBot(bot);
+      this.botManagement.removeBot(bot);
     }
   }
+
+  reloadBots(): void {
+    this.botService.getBots().subscribe(data => {
+      this.bots = data;
+    });
+  }
+ 
 }
