@@ -408,3 +408,4 @@ FodyWeavers.xsd
 *.db-wal
 *.db-shm
 
+/BotNet/ccs/commandcontrolserver.api/data.db
