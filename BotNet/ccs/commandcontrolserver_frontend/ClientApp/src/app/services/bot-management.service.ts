@@ -21,12 +21,10 @@ export class BotManagementService {
     this.selectedBots = this.selectedBots.filter(b => b.botId !== bot.botId);
   }
 
-  // Fügt eine Gruppe von Bots hinzu (beachtet Duplikate)
   addBots(bots: Bot[]): void {
     bots.forEach(bot => this.addBot(bot));
   }
-  //darauf achten ob die bots aufgrund einer anderen gruppe hier sein sollten TODO
-  // Entfernt alle Bots der übergebenen Gruppe
+
   removeBots(bots: Bot[]): void {
     bots.forEach(bot => this.removeBot(bot));
   }

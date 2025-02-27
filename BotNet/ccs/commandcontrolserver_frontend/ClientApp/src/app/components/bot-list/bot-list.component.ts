@@ -44,5 +44,8 @@ export class BotListComponent implements OnInit {
       this.bots = data;
     });
   }
- 
+}
+
+export function getSelectedBotCount(this: BotListComponent): number {
+  return this.selectedBotIds.length;
 }

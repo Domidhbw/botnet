@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommandService } from '../../services/command.service';
 import { BotResponse } from '../../models/bot-response.model';
+import { getSelectedBotCount } from '../../components/bot-list/bot-list.component';
 
 @Component({
   selector: 'app-terminal',
@@ -15,7 +16,11 @@ export class TerminalComponent {
   showDropdown = false;
   selectedBotIds: number[] = []; 
 
-  constructor(private commandService: CommandService) {}
+  selectedBotsCount = 0;
+
+  constructor(
+    private commandService: CommandService
+  ) {}
 
   sendCommand() {
     if (!this.command.trim()) {
@@ -38,7 +43,7 @@ export class TerminalComponent {
   uniqueBotIds(): number[] {
     const setOfIds = new Set<number>();
     this.responses.forEach(resp => setOfIds.add(resp.botId));
-    return Array.from(setOfIds).sort();
+    return Array.from(setOfIds).sort((a, b) => a - b);
   }
 
   toggleDropdown() {
@@ -72,6 +77,21 @@ export class TerminalComponent {
   }
 
   get disableDownload(): boolean {
-    return this.selectedBotIds.length > 1;
+    return false;
+  }
+
+  formatCommandOutput(text: string): string {
+    if (!text) {
+      return '';
+    }
+    try {
+      const obj = JSON.parse(text);
+      if (obj.output) {
+        return obj.output;
+      }
+    } catch (e) {
+      return text.replace(/[{}":]/g, '').replace(/\\n/g, '\n');
+    }
+    return text.replace(/\\n/g, '\n');
   }
 }

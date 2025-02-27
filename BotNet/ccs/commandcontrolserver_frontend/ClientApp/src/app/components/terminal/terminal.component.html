@@ -43,13 +43,13 @@
           <span class="timestamp">{{ resp.timestamp }}</span>
         </div>
         <div class="status">
-          Status: {{ resp.success ? 'Success' : 'Error' }}
+          {{ resp.success ? 'Success' : 'Error' }}
         </div>
         <div class="response-type">
           Response Type: {{ resp.responseType }}
         </div>
         <div class="content" *ngIf="resp.responseType === 'command'">
-          Output: {{ resp.responseContent }}
+          {{ formatCommandOutput(resp.responseContent?.toString() || '') }}
         </div>
         <div class="content" *ngIf="resp.responseType === 'file'">
           Filename: {{ resp.fileName }}
