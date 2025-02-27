@@ -19,13 +19,11 @@ export class BotComponent {
     @Inject(MatDialog) private dialog: MatDialog
   ) {}
 
-  /** Wenn man auf den Bot klickt, soll das Selection-Toggle ausgelöst werden. */
   onBotClick() {
     this.toggleSelected.emit();
   }
 
   openEditDialog(event: MouseEvent) {
-    // Verhindert, dass das Klicken auf den Stift auch den gesamten Bot auswählt.
     event.stopPropagation();
     const dialogRef = this.dialog.open(BotEditDialogComponent, {
       data: { bot: this }
@@ -39,7 +37,6 @@ export class BotComponent {
   }
   
   confirmDelete(event: MouseEvent): void {
-    // Ebenfalls Selektion verhindern
     event.stopPropagation();
 
     if (confirm(`Are you sure you want to delete the bot ${this.bot.name}?`)) {

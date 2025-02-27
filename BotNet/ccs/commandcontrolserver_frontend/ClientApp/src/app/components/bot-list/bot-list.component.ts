@@ -40,4 +40,11 @@ export class BotListComponent implements OnInit {
       // Optional: this.botManagement.removeBot(bot);
     }
   }
+
+  reloadBots(): void {
+    this.botService.getBots().subscribe(data => {
+      this.bots = data;
+    });
+  }
+ 
 }
