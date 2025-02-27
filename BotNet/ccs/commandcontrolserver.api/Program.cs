@@ -1,4 +1,5 @@
 using CommandControlServer.Api;
+using CommandControlServer.Api.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +18,8 @@ builder.Services.AddCors(options => options.AddPolicy(name: "AllowLocalhost5003"
 
 
 builder.Services.AddHttpClient();
+builder.Services.AddScoped<IBotService, BotService>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -25,6 +28,7 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    dbContext.Database.EnsureDeleted();
     dbContext.Database.Migrate();
 }
 
