@@ -13,12 +13,6 @@ namespace Bot.Api.Services
 
             string fullPath = Path.Combine(_baseDirectory, relativePath);
 
-            // Security: Ensure the requested file is inside the base directory
-            if (!fullPath.StartsWith(_baseDirectory, StringComparison.OrdinalIgnoreCase))
-            {
-                return null;
-            }
-
             if (!File.Exists(fullPath)) return null;
 
             try

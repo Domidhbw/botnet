@@ -4,6 +4,7 @@ namespace Bot.Api.Services
 {
     public class CallCCS : ICallCCS
     {
+        // This class registers the Bot to the ccs
         public async Task WaitAndPostToApi()
         {
             await Task.Delay(TimeSpan.FromSeconds(10));

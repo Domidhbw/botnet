@@ -17,12 +17,12 @@ export class BotComponent {
 
   openEditDialog() {
     const dialogRef = this.dialog.open(BotEditDialogComponent, {
-      data: { bot: this.bot }
+      data: { bot: this }
     });
   
     dialogRef.afterClosed().subscribe(updatedBot => {
       if (updatedBot) {
-        // Update the name of the bot after dialog is closed
+        // Update the name of the bot after dialog is closed TODO
         this.bot.name = updatedBot.name;
       }
     });
@@ -33,7 +33,7 @@ export class BotComponent {
     if (confirm(`Are you sure you want to delete the bot ${this.bot.name}?`)) {
       this.botService.deleteBot(this.bot.botId).subscribe(() => {
         alert('Bot gelöscht');
-        // Maybe Refresh Bot-Liste
+        // Maybe Refresh Bot-Liste TODO
       });
     }
   }
