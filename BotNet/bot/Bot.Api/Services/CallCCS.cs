@@ -22,7 +22,7 @@ namespace Bot.Api.Services
                 Console.WriteLine($"Attempt {attempt} of {maxAttempts}");
                 try
                 {
-                    using var content = new StringContent(containerName, Encoding.UTF8, "text/plain");
+                    using var content = new StringContent(containerName, Encoding.UTF8, "application/json");
                     HttpResponseMessage response = await client.PostAsync(apiUrl, content);
 
                     if (response.IsSuccessStatusCode)
