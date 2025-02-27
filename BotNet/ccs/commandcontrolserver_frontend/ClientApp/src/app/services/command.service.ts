@@ -11,6 +11,7 @@ import { BotResponse } from '../models/bot-response.model';
 })
 export class CommandService {
   private commandUrl = 'http://localhost:5002/api/Data/execute/command';
+  private downloadUrl = 'http://localhost:5002/api/Data/download';
 
   constructor(
     private http: HttpClient,
@@ -66,6 +67,7 @@ export class CommandService {
 
   downloadFile(filePath: string): void {
     const bots: Bot[] = this.botManagement.getSelectedBots();
+    const fileName = filePath.split('/').pop();
   
     if (!bots || bots.length === 0) {
       console.warn('No bots selected.');
@@ -73,17 +75,8 @@ export class CommandService {
     }
   
     const botIds = bots.map(bot => bot.botId);
-    const payload = {
-      BotIds: botIds,
-      FilePath: filePath
-    };
-  
-    const queryString = new URLSearchParams({
-      filePath: filePath
-    }).toString();
-  
-    const url = `http://localhost:5002/api/Data/download?${queryString}`;
-  
+    const url = `${this.downloadUrl}?botIds=${botIds.join('&botIds=')}&filePath=${encodeURIComponent(filePath)}`;
+
     try {
       fetch(url, {
         method: 'GET', 
@@ -98,7 +91,7 @@ export class CommandService {
         const objectUrl = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = objectUrl;
-        a.download = filePath.split('/').pop() || 'downloadedFile';
+        a.download = fileName+'.zip';
         document.body.appendChild(a);
         a.click();
         a.remove();

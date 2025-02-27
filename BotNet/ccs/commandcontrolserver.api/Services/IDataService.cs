@@ -8,6 +8,6 @@ namespace CommandControlServer.Api.Services
     {
         Task<List<BotResponseDto>> FetchFileAsync(FileRequest request);
         Task<List<BotResponseDto>> RunCommandAsync(CommandRequest request);
-        Task<byte[]> DownloadStoredFileAsync(string filePath);
+        Task<FileStreamResult> FetchAndDownloadAsync(DownloadRequest request);
     }
 }
