@@ -32,7 +32,8 @@ export class BotComponent {
   confirmDelete(): void {
     if (confirm(`Are you sure you want to delete the bot ${this.bot.name}?`)) {
       this.botService.deleteBot(this.bot.botId).subscribe(() => {
-        alert('Bot deleted');
+        alert('Bot gelöscht');
+        // Maybe Refresh Bot-Liste
       });
     }
   }

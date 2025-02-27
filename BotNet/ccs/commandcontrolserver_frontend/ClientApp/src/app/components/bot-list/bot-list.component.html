@@ -6,3 +6,27 @@
     <button (click)="selectBot(bot)">Select</button>
   </li>
 </ul>
+<div class="bot-list">
+  <h2>Bots</h2>
+  <ul>
+    <li *ngFor="let bot of bots">
+      <label class="custom-checkbox" [class.selected]="isSelected(bot)">
+        <input type="checkbox"
+               class="bot-checkbox"
+               [attr.data-bot-id]="bot.botId"
+               (change)="toggleBotSelection(bot, $event)"
+               [checked]="isSelected(bot)">
+        <span class="custom-checkbox-indicator"></span>
+        <span class="bot-name">{{ bot.name }}</span>
+        <div class="right-section">
+          <span class="bot-id">{{ bot.botId }}</span>
+          <span class="edit-icon" (click)="editBot(bot)">
+            <svg width="16" height="16" viewBox="0 0 24 24">
+              <path fill="#e0e0e0" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.003 1.003 0 0 0 0-1.42l-2.34-2.34a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z"/>
+            </svg>
+          </span>
+        </div>
+      </label>
+    </li>
+  </ul>
+</div>
