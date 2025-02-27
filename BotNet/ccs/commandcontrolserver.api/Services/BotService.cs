@@ -1,5 +1,6 @@
 using CommandControlServer.Api.DTOs;
 using CommandControlServer.Api.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace CommandControlServer.Api.Services
@@ -23,7 +24,7 @@ namespace CommandControlServer.Api.Services
             return bots.Select(b => new BotDto
             {
                 BotId = b.BotId,
-                Port = b.Port,
+                DockerName = b.DockerName,
                 Name = b.Name,
                 LastAction = b.LastAction,
                 CreatedAt = b.CreatedAt,
@@ -59,7 +60,7 @@ namespace CommandControlServer.Api.Services
             return new BotDto
             {
                 BotId = bot.BotId,
-                Port = bot.Port,
+                DockerName = bot.DockerName,
                 Name = bot.Name,
                 LastAction = bot.LastAction,
                 CreatedAt = bot.CreatedAt,
@@ -83,14 +84,13 @@ namespace CommandControlServer.Api.Services
             };
         }
 
-        public async Task<Bot?> RegisterBotAsync(string? remoteIp, int? remotePort)
+        public async Task<Bot?> RegisterBotAsync(string data)
         {
-            if (remotePort == null || await _context.Bots.AnyAsync(b => b.Port == remotePort))
-                return null;
+            if (await _context.Bots.AnyAsync(b => b.DockerName == data)) return null;
 
             var bot = new Bot
             {
-                Port = remotePort.Value,
+                DockerName = data,
                 Name = "",
                 LastAction = DateTimeOffset.UtcNow,
                 CreatedAt = DateTimeOffset.UtcNow,
