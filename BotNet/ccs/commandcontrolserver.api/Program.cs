@@ -21,9 +21,9 @@ builder.Services.AddHttpClient();
 builder.Services.AddHttpClient<IBotStatusService, BotStatusService>();
 builder.Services.AddScoped<IBotService, BotService>();
 builder.Services.AddScoped<IDataService, DataService>();
+builder.Services.AddScoped<BotGroupService>();
+builder.Services.AddScoped<BotResponseService>();
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
