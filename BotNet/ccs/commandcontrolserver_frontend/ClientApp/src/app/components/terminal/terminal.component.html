@@ -1,35 +1,61 @@
 <div class="terminal-container">
   <h2>Terminal</h2>
 
-  <!-- Command Execution Section -->
-  <div class="command-section">
-    <h3>Execute Command</h3>
-    <input [(ngModel)]="command" placeholder="Enter command" class="terminal-input" />
-    <button class="terminal-btn" (click)="sendCommand()">Send Command</button>
+  <!-- Top row: Command & Download side by side -->
+  <div class="top-section">
+    <!-- Command Execution Section -->
+    <div class="command-section">
+      <h3>Execute Command</h3>
+      <input [(ngModel)]="command" placeholder="Enter command" class="terminal-input" />
+      <button class="terminal-btn" (click)="sendCommand()">Send Command</button>
+    </div>
+
+    <!-- File Download Section -->
+    <div class="download-section">
+      <h3>Download File</h3>
+      <input [(ngModel)]="filePath" placeholder="Enter file path" class="terminal-input" />
+      <button class="terminal-btn" (click)="downloadFile()">Download</button>
+    </div>
   </div>
 
-  <!-- File Download Section -->
-  <div class="download-section">
-    <h3>Download File</h3>
-    <input [(ngModel)]="filePath" placeholder="Enter file path" class="terminal-input" />
-    <button class="terminal-btn" (click)="downloadFile()">Download</button>
-  </div>
-
-  <!-- Filter Section -->
+  <!-- Filter Section: Multi-select Dropdown -->
   <div class="filter-section">
-    <label>Filter by Bot ID: </label>
-    <input type="number" [(ngModel)]="filterBotId" placeholder="Bot ID" class="terminal-input" />
+    <span>Filter:</span>
+    <div class="dropdown">
+      <button class="dropdown-btn" (click)="toggleDropdown()">Select Bot(s)</button>
+      <div class="dropdown-content" *ngIf="showDropdown">
+        <!-- "Alle" Checkbox -->
+        <label class="custom-checkbox" (click)="toggleAll($event)">
+          <input type="checkbox" [checked]="allSelected" />
+          <span class="custom-checkbox-indicator"></span>
+          <span class="bot-id">Alle</span>
+        </label>
+        <hr class="separator" />
+        <!-- Einzelne Bot-IDs aus den Responses -->
+        <label
+          class="custom-checkbox"
+          *ngFor="let botId of uniqueBotIds()"
+          (click)="toggleBotId(botId, $event)"
+        >
+          <input type="checkbox" [checked]="isBotIdSelected(botId)" />
+          <span class="custom-checkbox-indicator"></span>
+          <span class="bot-id">{{ botId }}</span>
+        </label>
+      </div>
+    </div>
   </div>
 
-  <!-- Responses -->
-  <div class="responses-section" *ngFor="let resp of filteredResponses()">
-    <pre>
+  <!-- Scrollbarer Bereich für die Responses -->
+  <div class="responses-wrapper">
+    <div class="responses-section" *ngFor="let resp of filteredResponses()">
+      <pre>
 Bot ID: {{ resp.botId }}
 Timestamp: {{ resp.timestamp }}
 Status: {{ resp.success ? 'Success' : 'Error' }}
 Response Type: {{ resp.responseType }}
 {{ resp.responseType === 'command' ? ('Output: ' + resp.responseContent) : '' }}
 {{ resp.responseType === 'file' ? ('Filename: ' + resp.fileName) : '' }}
-    </pre>
+      </pre>
+    </div>
   </div>
 </div>

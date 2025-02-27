@@ -11,24 +11,22 @@ export class TerminalComponent {
   command: string = '';
   filePath: string = '';
   responses: BotResponse[] = [];
-  filterBotId: number | null = null; // Filter by Bot ID
+  
+  showDropdown = false;
+  allSelected = true;
+  selectedBotIds: number[] = []; 
 
-  constructor(
-    private commandService: CommandService,
-  ) {}
-
+  constructor(private commandService: CommandService) {}
 
   sendCommand() {
     if (!this.command.trim()) {
       return;
     }
     this.commandService.executeCommand(this.command).subscribe(resps => {
-      // Append or replace responses as desired.
       this.responses = resps;
     });
     this.command = '';
   }
-
 
   downloadFile() {
     if (!this.filePath.trim()) {
@@ -38,10 +36,52 @@ export class TerminalComponent {
     this.filePath = '';
   }
 
-  filteredResponses(): BotResponse[] {
-    if (this.filterBotId !== null) {
-      return this.responses.filter(resp => resp.botId === this.filterBotId);
+  uniqueBotIds(): number[] {
+    const setOfIds = new Set<number>();
+    this.responses.forEach(resp => setOfIds.add(resp.botId));
+    return Array.from(setOfIds).sort();
+  }
+
+  toggleDropdown() {
+    this.showDropdown = !this.showDropdown;
+  }
+
+  toggleAll(event: Event) {
+    event.stopPropagation();
+    this.allSelected = !this.allSelected;
+    if (this.allSelected) {
+      this.selectedBotIds = [];
     }
-    return this.responses;
+  }
+
+  isBotIdSelected(botId: number): boolean {
+    if (this.allSelected) return true;
+    return this.selectedBotIds.includes(botId);
+  }
+
+  toggleBotId(botId: number, event: Event) {
+    event.stopPropagation();
+    if (this.allSelected) {
+      this.allSelected = false;
+      this.selectedBotIds = [];
+    }
+    const idx = this.selectedBotIds.indexOf(botId);
+    if (idx === -1) {
+      this.selectedBotIds.push(botId);
+    } else {
+      this.selectedBotIds.splice(idx, 1);
+    }
+    if (this.selectedBotIds.length === this.uniqueBotIds().length) {
+      this.allSelected = true;
+      this.selectedBotIds = [];
+    }
+  }
+
+  filteredResponses(): BotResponse[] {
+    if (this.allSelected) {
+      return this.responses;
+    } else {
+      return this.responses.filter(resp => this.selectedBotIds.includes(resp.botId));
+    }
   }
 }
