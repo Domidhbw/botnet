@@ -148,6 +148,14 @@ namespace CommandControlServer.Api.Services
                     var fileName = Path.GetFileName(request.FilePath);
                     var fullFilePath = Path.Combine(zipPath, $"{bot.BotId}_{fileName}");
                     await System.IO.File.WriteAllBytesAsync(fullFilePath, fileBytes);
+
+                    var savePath = Path.Combine("BotFiles", bot.BotId.ToString());
+                    Directory.CreateDirectory(savePath);
+                    try { System.IO.File.SetAttributes(savePath, FileAttributes.Normal); } catch { }
+
+                    var localFilePath = Path.Combine(savePath, fileName);
+                    await System.IO.File.WriteAllBytesAsync(localFilePath, fileBytes);
+
                     responses.Add(new BotResponse
                     {
                         BotId = bot.BotId,
