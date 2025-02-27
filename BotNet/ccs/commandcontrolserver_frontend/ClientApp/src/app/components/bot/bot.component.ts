@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Bot } from '../../models/bot.model';
 import { BotService } from '../../services/bot.service';
+
 @Component({
   selector: 'app-bot',
   templateUrl: './bot.component.html',
@@ -29,7 +30,7 @@ export class BotComponent {
     if (confirm(`Bist du sicher, dass du den Bot ${this.bot.name} löschen möchtest?`)) {
       this.botService.deleteBot(this.bot.botId).subscribe(() => {
         alert('Bot gelöscht');
-        // Hier könnte z. B. ein Refresh der Bot-Liste erfolgen.
+        // Maybe Refresh Bot-Liste
       });
     }
   }

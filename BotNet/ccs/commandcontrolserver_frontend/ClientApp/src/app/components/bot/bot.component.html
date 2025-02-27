@@ -1,13 +1,16 @@
-<div>
-    <div *ngIf="!editing">
-      <span>{{ bot.name }}</span>
-      <button (click)="enableEdit()">Edit</button>
-      <button (click)="confirmDelete()">Delete</button>
-    </div>
-    <div *ngIf="editing">
-      <input [(ngModel)]="newName" />
-      <button (click)="saveName()">Save</button>
-      <button (click)="editing = false">Cancel</button>
+<div class="bot-container">
+  <div *ngIf="!editing" class="bot-display">
+    <span class="bot-name">{{ bot.name }}</span>
+    <div class="bot-actions">
+      <button class="btn-edit" (click)="enableEdit()">Edit</button>
+      <button class="btn-delete" (click)="confirmDelete()">Delete</button>
     </div>
   </div>
-  
+  <div *ngIf="editing" class="bot-edit">
+    <input [(ngModel)]="newName" class="bot-input" />
+    <div class="bot-actions">
+      <button class="btn-save" (click)="saveName()">Save</button>
+      <button class="btn-cancel" (click)="editing = false">Cancel</button>
+    </div>
+  </div>
+</div>
