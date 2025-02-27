@@ -1,16 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { BotService } from '../../services/bot.service';
-import { Bot } from '../../models/bot.model';
 import { BotManagementService } from '../../services/bot-management.service';
+import { Bot } from '../../models/bot.model';
 
 @Component({
   selector: 'app-bot-list',
   templateUrl: './bot-list.component.html',
   styleUrls: ['./bot-list.component.scss']
 })
-
-
 export class BotListComponent implements OnInit {
   bots: Bot[] = [];
   selectedBotIds: string[] = [];
@@ -37,15 +34,23 @@ export class BotListComponent implements OnInit {
       this.botManagement.addBot(bot);
     } else {
       this.selectedBotIds = this.selectedBotIds.filter(id => id !== bot.botId.toString());
+      // ggf. botManagement.removeBot(bot);
     }
   }
 
-  editBot(bot: Bot): void {
+  editBot(bot: Bot) {
+    // Logik zum Bearbeiten (z.B. ein Modal öffnen oder direkt Service aufrufen)
     console.log('Edit Bot:', bot);
-    // Logik Bearbeiten Bot
   }
 
-  selectBot(bot: Bot) {
-    this.botManagement.addBot(bot);
+  deleteBot(bot: Bot) {
+    // Bestätigen & löschen
+    if (confirm(`Bot ${bot.name} wirklich löschen?`)) {
+      this.botService.deleteBot(bot.botId).subscribe(() => {
+        alert(`Bot ${bot.name} gelöscht`);
+        // Liste neu laden oder local entfernen
+        this.bots = this.bots.filter(b => b.botId !== bot.botId);
+      });
+    }
   }
 }

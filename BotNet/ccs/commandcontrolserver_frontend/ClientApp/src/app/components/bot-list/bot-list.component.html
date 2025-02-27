@@ -1,28 +1,36 @@
-<h2>Bot Liste</h2>
-<ul>
-  <li *ngFor="let bot of bots">
-    {{ bot.name }} (botId: {{ bot.botId }})
-    <app-bot></app-bot>
-    <button (click)="selectBot(bot)">Select</button>
-  </li>
-</ul>
 <div class="bot-list">
-  <h2>Bots</h2>
+  <h2>Bot Liste</h2>
   <ul>
     <li *ngFor="let bot of bots">
       <label class="custom-checkbox" [class.selected]="isSelected(bot)">
-        <input type="checkbox"
-               class="bot-checkbox"
-               [attr.data-bot-id]="bot.botId"
-               (change)="toggleBotSelection(bot, $event)"
-               [checked]="isSelected(bot)">
+        <input
+          type="checkbox"
+          class="bot-checkbox"
+          [checked]="isSelected(bot)"
+          (change)="toggleBotSelection(bot, $event)"
+        />
         <span class="custom-checkbox-indicator"></span>
         <span class="bot-name">{{ bot.name }}</span>
         <div class="right-section">
           <span class="bot-id">{{ bot.botId }}</span>
           <span class="edit-icon" (click)="editBot(bot)">
             <svg width="16" height="16" viewBox="0 0 24 24">
-              <path fill="#e0e0e0" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1.003 1.003 0 0 0 0-1.42l-2.34-2.34a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z"/>
+              <path
+                fill="#e0e0e0"
+                d="M3 17.25V21h3.75l11.04-11.04-3.75-3.75L3 17.25zm17.71-10.21a1.003 
+                   1.003 0 0 0 0-1.42l-2.34-2.34a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 
+                   3.75 3.75 1.84-1.82z"
+              />
+            </svg>
+          </span>
+          <span class="delete-icon" (click)="deleteBot(bot)">
+            <svg width="16" height="16" viewBox="0 0 24 24">
+              <path
+                fill="#e0e0e0"
+                d="M9 3v-1c0-1.1.9-2 2-2h2c1.1 0 2 .9 2 2v1h5v2h-1v14a2 2 0 
+                   0 1-2 2H7a2 2 0 0 1-2-2V5H4V3h5zm2-1v1h2V2h-2zM8 7v12h2V7H8zm6 
+                   0v12h2V7h-2z"
+              />
             </svg>
           </span>
         </div>
