@@ -14,7 +14,8 @@ namespace Bot.Api.Services
             var random = new Random();
 
             using HttpClient client = new HttpClient();
-
+            var containerName = Environment.GetEnvironmentVariable("HOSTNAME");
+            Console.WriteLine($"[INFO] Running inside container: {containerName}");
             for (int attempt = 1; attempt <= maxAttempts; attempt++)
             {
                 Console.WriteLine($"Attempt {attempt} of {maxAttempts}");

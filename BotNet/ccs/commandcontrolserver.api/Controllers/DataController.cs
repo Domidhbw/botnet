@@ -51,7 +51,7 @@ namespace CommandControlServer.Api.Controllers
 
                 try
                 {
-                    string url = $"http://host.docker.internal:{bot.Port}/api/file/download?filepath={request.FilePath}";
+                    string url = $"http://{bot.DockerName}:8080/api/file/download?filepath={request.FilePath}";
                     var fileBytes = await _httpClient.GetByteArrayAsync(url);
 
                     var savePath = Path.Combine("BotFiles", bot.BotId.ToString());
@@ -108,7 +108,7 @@ namespace CommandControlServer.Api.Controllers
                 Bot = new BotDto
                 {
                     BotId = br.Bot.BotId,
-                    Port = br.Bot.Port,
+                    Dockername = br.Bot.DockerName,
                     Name = br.Bot.Name,
                     LastAction = br.Bot.LastAction,
                     CreatedAt = br.Bot.CreatedAt,
@@ -147,7 +147,7 @@ namespace CommandControlServer.Api.Controllers
 
                 try
                 {
-                    string url = $"http://host.docker.internal:{bot.Port}/api/command/run?cmd={request.Command}";
+                    string url = $"http://{bot.DockerName}:8080/api/command/run?cmd={request.Command}";
                     var responseContent = await _httpClient.GetStringAsync(url);
                     responses.Add(new BotResponse
                     {
@@ -190,7 +190,7 @@ namespace CommandControlServer.Api.Controllers
                 Bot = new BotDto
                 {
                     BotId = br.Bot.BotId,
-                    Port = br.Bot.Port,
+                    Dockername = br.Bot.DockerName,
                     Name = br.Bot.Name,
                     LastAction = br.Bot.LastAction,
                     CreatedAt = br.Bot.CreatedAt,

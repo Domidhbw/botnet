@@ -5,7 +5,7 @@ namespace CommandControlServer.Api.DTOs
     public class BotDto
     {
         public int BotId { get; set; }
-        public int Port { get; set; }
+        public string Dockername { get; set; }
         public string Name { get; set; }
         public DateTimeOffset LastAction { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
