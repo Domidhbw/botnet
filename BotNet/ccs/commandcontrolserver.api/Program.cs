@@ -18,7 +18,9 @@ builder.Services.AddCors(options => options.AddPolicy(name: "AllowLocalhost5003"
 
 
 builder.Services.AddHttpClient();
+builder.Services.AddHttpClient<IBotStatusService, BotStatusService>();
 builder.Services.AddScoped<IBotService, BotService>();
+builder.Services.AddScoped<IDataService, DataService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

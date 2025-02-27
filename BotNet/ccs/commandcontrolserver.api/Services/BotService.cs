@@ -1,6 +1,5 @@
 using CommandControlServer.Api.DTOs;
 using CommandControlServer.Api.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace CommandControlServer.Api.Services
@@ -8,14 +7,18 @@ namespace CommandControlServer.Api.Services
     public class BotService : IBotService
     {
         private readonly AppDbContext _context;
+        private readonly IBotStatusService _botStatusService;
 
-        public BotService(AppDbContext context)
+        public BotService(AppDbContext context, IBotStatusService botStatusService)
         {
             _context = context;
+            _botStatusService = botStatusService;
         }
 
         public async Task<IEnumerable<BotDto>> GetBotsAsync()
         {
+            _botStatusService.CheckAndRemoveOfflineBotsAsync().Wait();
+
             var bots = await _context.Bots
                 .Include(b => b.BotGroups)
                 .Include(b => b.Responses)
@@ -91,7 +94,7 @@ namespace CommandControlServer.Api.Services
             var bot = new Bot
             {
                 DockerName = data,
-                Name = "",
+                Name = data,
                 LastAction = DateTimeOffset.UtcNow,
                 CreatedAt = DateTimeOffset.UtcNow,
                 UpdatedAt = DateTimeOffset.UtcNow
