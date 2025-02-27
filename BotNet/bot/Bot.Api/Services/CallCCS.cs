@@ -11,7 +11,7 @@ namespace Bot.Api.Services
             string apiUrl = "http://host.docker.internal:5002/api/Bot/bot";
             var containerName = Environment.GetEnvironmentVariable("HOSTNAME");
             Console.WriteLine($"[INFO] Running inside container: {containerName}");
-            string jsonData = $"{{\"containerName\": \"{containerName}\"}}";
+            string jsonData = $"\"{containerName}\"";
             int maxAttempts = 5;
             var random = new Random();
 
@@ -22,7 +22,7 @@ namespace Bot.Api.Services
                 Console.WriteLine($"Attempt {attempt} of {maxAttempts}");
                 try
                 {
-                    using var content = new StringContent(containerName, Encoding.UTF8, "application/json");
+                    using var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
                     HttpResponseMessage response = await client.PostAsync(apiUrl, content);
 
                     if (response.IsSuccessStatusCode)

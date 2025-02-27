@@ -39,6 +39,7 @@ namespace CommandControlServer.Api.Controllers
         [HttpPost("bot")]
         public async Task<ActionResult<Bot>> RegisterBot([FromBody] string data)
         {
+            Console.WriteLine(data);
             var bot = await _botService.RegisterBotAsync(data);
             if (bot == null) return BadRequest("Port already exists");
             return Ok(bot);
