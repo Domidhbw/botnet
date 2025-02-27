@@ -26,7 +26,7 @@ export class BotComponent {
   openEditDialog(event: MouseEvent) {
     event.stopPropagation();
     const dialogRef = this.dialog.open(BotEditDialogComponent, {
-      data: { bot: this }
+      data: { bot: this.bot }
     });
   
     dialogRef.afterClosed().subscribe((updatedBot: Bot | undefined) => {

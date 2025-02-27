@@ -24,11 +24,12 @@ export class BotService {
   }
 
   updateBot(botId: number, newName: string): Observable<void> {
-    const body = `name: ${newName}`;
+    const body = `\{ "name": "${newName}" \}`;
+    console.log('body:', body);
     
     const headers = { 'Content-Type': 'application/json' };  
     
-    return this.http.put<void>(`${this.apiUrl}editName/${botId}`, body, { headers });
+    return this.http.put<void>(`${this.apiUrl}editName/${botId}`, JSON.stringify(newName), { headers });
   }
   
   deleteBot(botId: number): Observable<void> {

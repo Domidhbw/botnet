@@ -17,6 +17,7 @@ export class BotEditDialogComponent {
     @Inject(MAT_DIALOG_DATA) public data: { bot: Bot },
     private botService: BotService
   ) {
+    console.log('BotEditDialogComponent data:', data);
     this.newName = data.bot.name;
     this.botId = data.bot.botId;
   }
