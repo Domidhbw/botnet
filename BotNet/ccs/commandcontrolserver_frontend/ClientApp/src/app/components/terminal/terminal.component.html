@@ -14,30 +14,19 @@
     <div class="download-section">
       <h3>Download File</h3>
       <input [(ngModel)]="filePath" placeholder="Enter file path" class="terminal-input" />
-      <button class="terminal-btn" (click)="downloadFile()">Download</button>
+      <button class="terminal-btn" [disabled]="disableDownload" (click)="downloadFile()">Download</button>
     </div>
   </div>
 
-  <!-- Filter Section: Multi-select Dropdown -->
+  <!-- Filter Section: Multi-select Dropdown (ohne "Alle"-Option) -->
   <div class="filter-section">
     <span>Filter:</span>
     <div class="dropdown">
       <button class="dropdown-btn" (click)="toggleDropdown()">Select Bot(s)</button>
       <div class="dropdown-content" *ngIf="showDropdown">
-        <!-- "Alle" Checkbox -->
-        <label class="custom-checkbox" (click)="toggleAll($event)">
-          <input type="checkbox" [checked]="allSelected" />
-          <span class="custom-checkbox-indicator"></span>
-          <span class="bot-id">Alle</span>
-        </label>
-        <hr class="separator" />
         <!-- Einzelne Bot-IDs aus den Responses -->
-        <label
-          class="custom-checkbox"
-          *ngFor="let botId of uniqueBotIds()"
-          (click)="toggleBotId(botId, $event)"
-        >
-          <input type="checkbox" [checked]="isBotIdSelected(botId)" />
+        <label class="custom-checkbox" *ngFor="let botId of uniqueBotIds()">
+          <input type="checkbox" [checked]="isBotIdSelected(botId)" (change)="toggleBotId(botId, $event)" />
           <span class="custom-checkbox-indicator"></span>
           <span class="bot-id">{{ botId }}</span>
         </label>
@@ -45,17 +34,27 @@
     </div>
   </div>
 
-  <!-- Scrollbarer Bereich für die Responses -->
+  <!-- Responses-Bereich im "Karten-Stil" -->
   <div class="responses-wrapper">
-    <div class="responses-section" *ngFor="let resp of filteredResponses()">
-      <pre>
-Bot ID: {{ resp.botId }}
-Timestamp: {{ resp.timestamp }}
-Status: {{ resp.success ? 'Success' : 'Error' }}
-Response Type: {{ resp.responseType }}
-{{ resp.responseType === 'command' ? ('Output: ' + resp.responseContent) : '' }}
-{{ resp.responseType === 'file' ? ('Filename: ' + resp.fileName) : '' }}
-      </pre>
+    <div class="responses-section">
+      <div class="response-card" *ngFor="let resp of filteredResponses()">
+        <div class="response-header">
+          <span class="bot-id">Bot ID: {{ resp.botId }}</span>
+          <span class="timestamp">{{ resp.timestamp }}</span>
+        </div>
+        <div class="status">
+          Status: {{ resp.success ? 'Success' : 'Error' }}
+        </div>
+        <div class="response-type">
+          Response Type: {{ resp.responseType }}
+        </div>
+        <div class="content" *ngIf="resp.responseType === 'command'">
+          Output: {{ resp.responseContent }}
+        </div>
+        <div class="content" *ngIf="resp.responseType === 'file'">
+          Filename: {{ resp.fileName }}
+        </div>
+      </div>
     </div>
   </div>
 </div>

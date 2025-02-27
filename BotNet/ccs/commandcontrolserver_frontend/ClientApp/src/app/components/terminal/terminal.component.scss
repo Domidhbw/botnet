@@ -52,6 +52,12 @@
       &:hover {
         background-color: #00cc80;
       }
+  
+      &:disabled {
+        background-color: #666 !important;
+        color: #ccc !important;
+        cursor: not-allowed;
+      }
     }
   
     .filter-section {
@@ -106,7 +112,7 @@
       }
   
       input[type="checkbox"] {
-        display: none; 
+        display: none;
       }
   
       .custom-checkbox-indicator {
@@ -126,19 +132,48 @@
     }
   
     .responses-wrapper {
-      flex: 1; 
-      overflow-y: auto; 
+      flex: 1;
+      overflow-y: auto;
       margin-top: 10px;
   
       .responses-section {
         margin-bottom: 10px;
   
-        pre {
+        .response-card {
           background-color: #2a2a2a;
           padding: 10px;
           border-radius: 4px;
-          overflow-x: auto;
-          line-height: 1.4;
+          margin-bottom: 10px;
+          border: 1px solid #333;
+          box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+  
+          .response-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+  
+            .bot-id {
+              font-weight: bold;
+              color: #00ff99;
+            }
+            .timestamp {
+              font-size: 0.8em;
+              color: #aaa;
+            }
+          }
+  
+          .status {
+            margin-bottom: 4px;
+          }
+  
+          .response-type {
+            margin-bottom: 4px;
+          }
+  
+          .content {
+            margin-top: 4px;
+            white-space: pre-wrap;
+          }
         }
       }
     }

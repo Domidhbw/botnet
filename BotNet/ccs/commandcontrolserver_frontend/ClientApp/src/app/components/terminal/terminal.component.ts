@@ -13,7 +13,6 @@ export class TerminalComponent {
   responses: BotResponse[] = [];
   
   showDropdown = false;
-  allSelected = true;
   selectedBotIds: number[] = []; 
 
   constructor(private commandService: CommandService) {}
@@ -46,42 +45,33 @@ export class TerminalComponent {
     this.showDropdown = !this.showDropdown;
   }
 
-  toggleAll(event: Event) {
-    event.stopPropagation();
-    this.allSelected = !this.allSelected;
-    if (this.allSelected) {
-      this.selectedBotIds = [];
-    }
-  }
-
   isBotIdSelected(botId: number): boolean {
-    if (this.allSelected) return true;
     return this.selectedBotIds.includes(botId);
   }
 
   toggleBotId(botId: number, event: Event) {
-    event.stopPropagation();
-    if (this.allSelected) {
-      this.allSelected = false;
-      this.selectedBotIds = [];
-    }
-    const idx = this.selectedBotIds.indexOf(botId);
-    if (idx === -1) {
-      this.selectedBotIds.push(botId);
+    const input = event.target as HTMLInputElement;
+    if (input.checked) {
+      if (!this.selectedBotIds.includes(botId)) {
+        this.selectedBotIds.push(botId);
+      }
     } else {
-      this.selectedBotIds.splice(idx, 1);
-    }
-    if (this.selectedBotIds.length === this.uniqueBotIds().length) {
-      this.allSelected = true;
-      this.selectedBotIds = [];
+      const idx = this.selectedBotIds.indexOf(botId);
+      if (idx !== -1) {
+        this.selectedBotIds.splice(idx, 1);
+      }
     }
   }
 
   filteredResponses(): BotResponse[] {
-    if (this.allSelected) {
+    if (this.selectedBotIds.length === 0) {
       return this.responses;
     } else {
       return this.responses.filter(resp => this.selectedBotIds.includes(resp.botId));
     }
+  }
+
+  get disableDownload(): boolean {
+    return this.selectedBotIds.length > 1;
   }
 }
