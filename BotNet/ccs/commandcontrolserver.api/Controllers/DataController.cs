@@ -108,7 +108,7 @@ namespace CommandControlServer.Api.Controllers
                 Bot = new BotDto
                 {
                     BotId = br.Bot.BotId,
-                    Dockername = br.Bot.DockerName,
+                    DockerName = br.Bot.DockerName,
                     Name = br.Bot.Name,
                     LastAction = br.Bot.LastAction,
                     CreatedAt = br.Bot.CreatedAt,
@@ -190,7 +190,7 @@ namespace CommandControlServer.Api.Controllers
                 Bot = new BotDto
                 {
                     BotId = br.Bot.BotId,
-                    Dockername = br.Bot.DockerName,
+                    DockerName = br.Bot.DockerName,
                     Name = br.Bot.Name,
                     LastAction = br.Bot.LastAction,
                     CreatedAt = br.Bot.CreatedAt,
