@@ -13,7 +13,7 @@ builder.Services.AddControllers();
 builder.Services.AddCors(options => options.AddPolicy(name: "AllowLocalhost5003",
                policy =>
                {
-                   policy.WithOrigins("https://localhost:5003", "http://localhost:5003", "http://localhost:4200").AllowAnyMethod().AllowAnyHeader();
+                   policy.WithOrigins("https://localhost:5003", "http://localhost:5003").AllowAnyMethod().AllowAnyHeader();
                }));
 
 
