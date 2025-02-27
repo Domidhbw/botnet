@@ -1,19 +1,35 @@
-<h2>Terminal</h2>
-<div>
-  <input [(ngModel)]="command" placeholder="Befehl eingeben" />
-  <button (click)="sendCommand()">Senden</button>
-</div>
-<div>
-  <label>Filter nach Bot ID: </label>
-  <input type="number" [(ngModel)]="filterBotId" placeholder="Bot ID" />
-</div>
-<div *ngFor="let resp of filteredResponses()">
-  <pre>
+<div class="terminal-container">
+  <h2>Terminal</h2>
+
+  <!-- Command Execution Section -->
+  <div class="command-section">
+    <h3>Execute Command</h3>
+    <input [(ngModel)]="command" placeholder="Enter command" />
+    <button (click)="sendCommand()">Send Command</button>
+  </div>
+
+  <!-- File Download Section -->
+  <div class="download-section">
+    <h3>Download File</h3>
+    <input [(ngModel)]="filePath" placeholder="Enter file path" />
+    <button (click)="downloadFile()">Download</button>
+  </div>
+
+  <!-- Filter Section -->
+  <div class="filter-section">
+    <label>Filter by Bot ID: </label>
+    <input type="number" [(ngModel)]="filterBotId" placeholder="Bot ID" />
+  </div>
+
+  <!-- Responses Display Section -->
+  <div class="responses-section" *ngFor="let resp of filteredResponses()">
+    <pre>
 Bot ID: {{ resp.botId }}
 Timestamp: {{ resp.timestamp }}
 Status: {{ resp.success ? 'Success' : 'Error' }}
 Response Type: {{ resp.responseType }}
 {{ resp.responseType === 'command' ? ('Output: ' + resp.output) : '' }}
-{{ resp.responseType === 'file' ? ('Dateiname: ' + resp.fileName) : '' }}
-  </pre>
+{{ resp.responseType === 'file' ? ('Filename: ' + resp.fileName) : '' }}
+    </pre>
+  </div>
 </div>
