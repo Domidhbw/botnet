@@ -409,3 +409,5 @@ FodyWeavers.xsd
 *.db-shm
 
 /BotNet/ccs/commandcontrolserver.api/data.db
+/BotNet/ccs/commandcontrolserver.api/data.db-shm
+/BotNet/ccs/commandcontrolserver.api/data.db-wal

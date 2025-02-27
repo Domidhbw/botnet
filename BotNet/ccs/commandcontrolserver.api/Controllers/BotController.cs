@@ -1,7 +1,8 @@
 using CommandControlServer.Api.Models;
 using CommandControlServer.Api.DTOs;
-using Microsoft.EntityFrameworkCore;
+using CommandControlServer.Api.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CommandControlServer.Api.Controllers
 {
@@ -14,155 +15,61 @@ namespace CommandControlServer.Api.Controllers
     [ApiController]
     public class BotController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IBotService _botService;
 
-        public BotController(AppDbContext context)
+        public BotController(IBotService botService)
         {
-            _context = context;
+            _botService = botService;
         }
 
         [HttpGet("bots")]
         public async Task<ActionResult<IEnumerable<BotDto>>> GetBots()
         {
-            var bots = await _context.Bots
-                .Include(b => b.BotGroups)
-                .Include(b => b.Responses)
-                .ToListAsync();
-
-            var botDtos = bots.Select(b => new BotDto
-            {
-                BotId = b.BotId,
-                Port = b.Port,
-                Name = b.Name,
-                LastAction = b.LastAction,
-                CreatedAt = b.CreatedAt,
-                UpdatedAt = b.UpdatedAt,
-                Responses = b.Responses.Select(br => new BotResponseDto
-                {
-                    BotResponseId = br.BotResponseId,
-                    BotId = br.BotId,
-                    ResponseType = br.ResponseType,
-                    Success = br.Success,
-                    Timestamp = br.Timestamp,
-                    FilePath = br.FilePath,
-                    FileName = br.FileName
-                }).ToList(),
-                BotGroups = b.BotGroups.Select(bg => new BotGroupDto
-                {
-                    BotGroupId = bg.BotGroupId,
-                    Name = bg.Name,
-                    CreatedAt = bg.CreatedAt
-                }
-                ).ToList()
-            }).ToList();
-
-            return Ok(botDtos);
-        }
-
-        [HttpPost("bot")]
-        public async Task<ActionResult<Bot>> RegisterBot()
-        {
-            var remoteIp = HttpContext.Connection.RemoteIpAddress?.ToString(); 
-            var remotePort = HttpContext.Connection.RemotePort;
-            if (await _context.Bots.AnyAsync(b => b.Port == remotePort)) return BadRequest("Port already exists");
-            Console.WriteLine($"Remote IP: {remoteIp}, Remote Port: {remotePort}");
-            var bot = new Bot
-            {
-                Port = remotePort,
-                Name = "",
-                LastAction = DateTimeOffset.UtcNow,
-                CreatedAt = DateTimeOffset.UtcNow,
-                UpdatedAt = DateTimeOffset.UtcNow
-            };
-            _context.Bots.Add(bot);
-            await _context.SaveChangesAsync();
-
-            return Ok(bot);
+            return Ok(await _botService.GetBotsAsync());
         }
 
         [HttpGet("bot/{id}")]
         public async Task<ActionResult<BotDto>> GetBot(int id)
         {
-            var bot = await _context.Bots
-                .Include(b => b.BotGroups)
-                .Include(b => b.Responses)
-                .FirstOrDefaultAsync(b => b.BotId == id);
-
+            var bot = await _botService.GetBotByIdAsync(id);
             if (bot == null) return NotFound();
+            return Ok(bot);
+        }
 
-            var botDto = new BotDto
-            {
-                BotId = bot.BotId,
-                Port = bot.Port,
-                Name = bot.Name,
-                LastAction = bot.LastAction,
-                CreatedAt = bot.CreatedAt,
-                UpdatedAt = bot.UpdatedAt,
-                Responses = bot.Responses.Select(br => new BotResponseDto
-                {
-                    BotResponseId = br.BotResponseId,
-                    BotId = br.BotId,
-                    ResponseType = br.ResponseType,
-                    Success = br.Success,
-                    Timestamp = br.Timestamp,
-                    FilePath = br.FilePath,
-                    FileName = br.FileName
-                }).ToList(),
-                BotGroups = bot.BotGroups.Select(bg => new BotGroupDto
-                {
-                    BotGroupId = bg.BotGroupId,
-                    Name = bg.Name,
-                    CreatedAt = bg.CreatedAt
-                }).ToList()
-            };
-
-            return Ok(botDto);
+        [HttpPost("bot")]
+        public async Task<ActionResult<Bot>> RegisterBot([FromBody] string data)
+        {
+            Console.WriteLine(data);
+            var bot = await _botService.RegisterBotAsync(data);
+            if (bot == null) return BadRequest("Port already exists");
+            return Ok(bot);
         }
 
         [HttpPut("editName/{id}")]
         public async Task<IActionResult> EditName(int id, [FromBody] string name)
         {
-            if (!string.IsNullOrWhiteSpace(name) && _context.Bots.Any(b => b.Name == name && b.BotId != id)) return BadRequest("Name already exists");
+            if (await _botService.EditNameAsync(id, name))
+                return NoContent();
 
-            var bot = await _context.Bots.FindAsync(id);
-            if (bot == null) return NotFound();
-            bot.Name = name;
-            bot.UpdatedAt = DateTimeOffset.UtcNow;
-            await _context.SaveChangesAsync();
-            return NoContent();
-        }
-
-
-
-        [HttpDelete("bot/{id}")]
-        public async Task<IActionResult> DeleteBot(int id)
-        {
-            var bot = await _context.Bots.FindAsync(id);
-            if (bot == null) return NotFound();
-
-            _context.Bots.Remove(bot);
-            await _context.SaveChangesAsync();
-            return NoContent();
+            return BadRequest("Name already exists or Bot not found");
         }
 
         [HttpPut("editBotGroups/{id}")]
         public async Task<IActionResult> EditBotGroups(int id, [FromBody] EditBotGroupsDto dto)
         {
-            var bot = await _context.Bots
-                .Include(b => b.BotGroups)
-                .FirstOrDefaultAsync(b => b.BotId == id);
+            if (await _botService.EditBotGroupsAsync(id, dto.BotGroupIds))
+                return NoContent();
 
-            if (bot == null) return NotFound();
+            return NotFound();
+        }
 
-            var botGroups = await _context.BotGroups
-                .Where(bg => dto.BotGroupIds.Contains(bg.BotGroupId))
-                .ToListAsync();
+        [HttpDelete("bot/{id}")]
+        public async Task<IActionResult> DeleteBot(int id)
+        {
+            if (await _botService.DeleteBotAsync(id))
+                return NoContent();
 
-            bot.BotGroups = botGroups;
-            bot.UpdatedAt = DateTimeOffset.UtcNow;
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            return NotFound();
         }
     }
 }
