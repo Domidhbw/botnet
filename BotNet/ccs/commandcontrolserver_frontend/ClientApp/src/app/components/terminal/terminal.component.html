@@ -4,23 +4,24 @@
   <!-- Command Execution Section -->
   <div class="command-section">
     <h3>Execute Command</h3>
-    <input [(ngModel)]="command" placeholder="Enter command" />
-    <button (click)="sendCommand()">Send Command</button>
+    <input [(ngModel)]="command" placeholder="Enter command" class="terminal-input" />
+    <button class="terminal-btn" (click)="sendCommand()">Send Command</button>
   </div>
 
   <!-- File Download Section -->
   <div class="download-section">
     <h3>Download File</h3>
-    <input [(ngModel)]="filePath" placeholder="Enter file path" />
-    <button (click)="downloadFile()">Download</button>
+    <input [(ngModel)]="filePath" placeholder="Enter file path" class="terminal-input" />
+    <button class="terminal-btn" (click)="downloadFile()">Download</button>
   </div>
 
   <!-- Filter Section -->
   <div class="filter-section">
     <label>Filter by Bot ID: </label>
-    <input type="number" [(ngModel)]="filterBotId" placeholder="Bot ID" />
+    <input type="number" [(ngModel)]="filterBotId" placeholder="Bot ID" class="terminal-input" />
   </div>
 
+  <!-- Responses -->
   <div class="responses-section" *ngFor="let resp of filteredResponses()">
     <pre>
 Bot ID: {{ resp.botId }}
