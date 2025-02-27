@@ -4,95 +4,20 @@
   background-color: transparent;
   padding: 10px;
   overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-}
 
-.bot-list h2 {
-  margin-bottom: 15px;
-  color: #00ff99;
-  font-size: 1.5em;
-}
+  h2 {
+    margin-bottom: 15px;
+    color: #00ff99;
+    font-size: 2em;
+  }
 
-.bot-list ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
 
-.bot-list li {
-  margin-bottom: 8px;
-}
-
-/* Container für den gesamten Listeneintrag */
-.custom-checkbox {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 10px;
-  background-color: #2a2a2a;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s, color 0.3s;
-  width: 100%;
-}
-
-.custom-checkbox:hover {
-  background-color: #00ff99;
-  color: #121212;
-}
-
-/* Checkbox unsichtbar */
-.custom-checkbox input[type="checkbox"] {
-  display: none;
-}
-
-/* Visuelles Kästchen */
-.custom-checkbox-indicator {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  background-color: transparent;
-  border: 2px solid #fff;
-  border-radius: 3px;
-  transition: all 0.2s ease-in-out;
-}
-
-.custom-checkbox input[type="checkbox"]:checked + .custom-checkbox-indicator {
-  background-color: #fff;
-  border-color: transparent;
-}
-
-.bot-name {
-  flex: 1; /* füllt den Platz */
-}
-
-.right-section {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.bot-id {
-  color: #a8a8a8;
-  font-size: 0.9em;
-}
-
-/* Wenn Checkbox ausgewählt, anderer Hover-Effekt */
-.custom-checkbox.selected {
-  background-color: #00ff9971;
-  color: #ffffff;
-}
-.custom-checkbox.selected:hover {
-  background-color: #00ff99;
-  color: #121212;
-}
-
-/* Icons */
-.edit-icon, .delete-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
+  li {
+    margin-bottom: 8px;
+  }
 }

@@ -1,5 +1,36 @@
-<div class="bot-container">
-  <span>{{ bot.name }}</span>
-  <button mat-button (click)="openEditDialog()">Edit</button>
-  <button mat-button (click)="confirmDelete()">Delete</button>
+<div class="bot-container"
+     [class.selected]="isSelected"
+     (click)="onBotClick()">
+  <!-- Custom Checkbox-Indicator -->
+  <span class="custom-checkbox-indicator"></span>
+  
+  <!-- Name in der Mitte -->
+  <span class="bot-name">{{ bot.name }}</span>
+
+  <!-- ID rechts -->
+  <span class="bot-id">{{ bot.botId }}</span>
+  
+  <!-- Edit-Icon -->
+  <span class="edit-icon" (click)="openEditDialog($event)">
+    <svg width="16" height="16" viewBox="0 0 24 24">
+      <path
+        fill="#e0e0e0"
+        d="M3 17.25V21h3.75l11.04-11.04-3.75-3.75L3 17.25zm17.71-10.21
+           a1.003 1.003 0 0 0 0-1.42l-2.34-2.34a1.003 1.003 0 0 0-1.42 0l-1.83
+           1.83 3.75 3.75 1.84-1.82z"
+      />
+    </svg>
+  </span>
+  
+  <!-- Delete-Icon -->
+  <span class="delete-icon" (click)="confirmDelete($event)">
+    <svg width="16" height="16" viewBox="0 0 24 24">
+      <path
+        fill="#e0e0e0"
+        d="M9 3v-1c0-1.1.9-2 2-2h2c1.1 0 2 .9 2 2v1h5v2h-1v14
+           a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5H4V3h5zm2-1v1h2V2h-2zM8 7v12h2V7H8zm6
+           0v12h2V7h-2z"
+      />
+    </svg>
+  </span>
 </div>

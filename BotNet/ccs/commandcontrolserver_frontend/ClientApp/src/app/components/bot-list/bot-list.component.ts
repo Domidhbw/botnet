@@ -27,30 +27,17 @@ export class BotListComponent implements OnInit {
     return this.selectedBotIds.includes(bot.botId.toString());
   }
 
-  toggleBotSelection(bot: Bot, event: Event): void {
-    const inputElement = event.target as HTMLInputElement;
-    if (inputElement.checked) {
-      this.selectedBotIds.push(bot.botId.toString());
+  toggleBotSelection(bot: Bot): void {
+    const botIdStr = bot.botId.toString();
+    const idx = this.selectedBotIds.indexOf(botIdStr);
+    if (idx === -1) {
+      // Falls nicht enthalten -> hinzufügen
+      this.selectedBotIds.push(botIdStr);
       this.botManagement.addBot(bot);
     } else {
-      this.selectedBotIds = this.selectedBotIds.filter(id => id !== bot.botId.toString());
-      // ggf. botManagement.removeBot(bot);
-    }
-  }
-
-  editBot(bot: Bot) {
-    // Logik zum Bearbeiten (z.B. ein Modal öffnen oder direkt Service aufrufen)
-    console.log('Edit Bot:', bot);
-  }
-
-  deleteBot(bot: Bot) {
-    // Bestätigen & löschen
-    if (confirm(`Bot ${bot.name} wirklich löschen?`)) {
-      this.botService.deleteBot(bot.botId).subscribe(() => {
-        alert(`Bot ${bot.name} gelöscht`);
-        // Liste neu laden oder local entfernen
-        this.bots = this.bots.filter(b => b.botId !== bot.botId);
-      });
+      // Falls enthalten -> entfernen
+      this.selectedBotIds.splice(idx, 1);
+      // Optional: this.botManagement.removeBot(bot);
     }
   }
 }

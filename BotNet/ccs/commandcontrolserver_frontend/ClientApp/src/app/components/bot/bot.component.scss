@@ -1,59 +1,63 @@
 .bot-container {
-    padding: 10px;
-    background-color: #2a2a2a;
-    border-radius: 4px;
-    margin-bottom: 8px;
-    display: flex;
-    flex-direction: column;
-    color: #e0e0e0;
-  
-    .bot-display,
-    .bot-edit {
-      display: flex;
-      align-items: center;
-      width: 100%;
-    }
-  
-    .bot-name {
-      flex: 1;
-      font-size: 1.1em;
-    }
-  
-    .bot-actions {
-      display: flex;
-      gap: 8px;
-    }
-  
-    button {
-      padding: 5px 10px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      background-color: #00ff99;
-      color: #121212;
-      transition: background-color 0.3s;
-  
-      &:hover {
-        background-color: #00cc80;
-      }
-    }
-  
-    .btn-delete {
-      background-color: #ff6666;
-      color: #121212;
-  
-      &:hover {
-        background-color: #ff4d4d;
-      }
-    }
-  
-    input.bot-input {
-      flex: 1;
-      padding: 5px 10px;
-      border: 1px solid #333;
-      border-radius: 4px;
-      background-color: #1e1e1e;
-      color: #e0e0e0;
-    }
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  background-color: #2a2a2a;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+  width: 100%;
+  /* Abstand nach unten, wenn gewünscht */
+  margin-bottom: 5px;
+
+  &:hover {
+    background-color: #00ff99;
+    color: #121212;
   }
-  
+
+  &.selected {
+    background-color: #00ff9971;
+    color: #ffffff;
+  }
+  &.selected:hover {
+    background-color: #00ff99;
+    color: #121212;
+  }
+
+  .custom-checkbox-indicator {
+    width: 20px;
+    height: 20px;
+    background-color: transparent;
+    border: 2px solid #fff;
+    border-radius: 3px;
+    transition: all 0.2s ease-in-out;
+  }
+
+  /* Wenn Bot ausgewählt, Checkbox weiß gefüllt */
+  &.selected .custom-checkbox-indicator {
+    background-color: #fff;
+    border-color: transparent;
+  }
+
+  .bot-id {
+    color: #a8a8a8;
+    font-size: 0.9em;
+  }
+
+  .bot-name {
+    flex: 1; /* füllt den Platz zwischen ID und Icons */
+  }
+
+  .edit-icon, .delete-icon {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+  }
+
+  .edit-icon:hover, .delete-icon:hover {
+    transform: scale(1.1);
+  }
+}
