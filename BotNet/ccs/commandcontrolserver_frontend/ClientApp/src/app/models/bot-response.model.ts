@@ -1,3 +1,5 @@
+import { Bot } from './bot.model';
+
 export interface BotResponse {
   botResponseId: number;
   botId: number;
@@ -14,14 +16,4 @@ export interface BotResponse {
 export interface ResponseContent {
   command: string;
   output: string;
-}
-export interface Bot {
-  botId: number;
-  dockerName: string;
-  name: string;
-  lastAction: string;
-  createdAt: string;
-  updatedAt: string;
-  botGroups: any[]; 
-  responses: any[]; 
 }
