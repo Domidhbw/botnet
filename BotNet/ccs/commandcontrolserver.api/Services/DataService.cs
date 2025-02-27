@@ -3,6 +3,7 @@ using CommandControlServer.Api.DTOs;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using CommandControlServer.Api.Controllers;
+using System.IO.Compression;
 
 namespace CommandControlServer.Api.Services
 {
@@ -126,12 +127,60 @@ namespace CommandControlServer.Api.Services
             return responses.Select(MapToDto).ToList();
         }
 
-        public async Task<byte[]> DownloadStoredFileAsync(string filePath)
+        public async Task<FileStreamResult> FetchAndDownloadAsync(DownloadRequest request)
         {
-            if (string.IsNullOrEmpty(filePath)) throw new FileNotFoundException("File path is required.");
-            if (!System.IO.File.Exists(filePath)) throw new FileNotFoundException("File not found.");
-
-            return await System.IO.File.ReadAllBytesAsync(filePath);
+            if (request.BotIds == null || !request.BotIds.Any()) throw new ArgumentException("At least one bot ID is required.");
+            if (string.IsNullOrWhiteSpace(request.FilePath)) throw new ArgumentException("FilePath is required.");
+            await _botStatusService.CheckAndRemoveOfflineBotsAsync();
+            var bots = await _context.Bots.Where(b => request.BotIds.Contains(b.BotId)).ToListAsync();
+            var responses = new List<BotResponse>();
+            var zipPath = Path.Combine("BotFiles", "Download", Guid.NewGuid().ToString());
+            Directory.CreateDirectory(zipPath);
+            try { System.IO.File.SetAttributes(zipPath, FileAttributes.Normal); } catch { }
+            foreach (var bot in bots)
+            {
+                bot.LastAction = DateTimeOffset.UtcNow;
+                _context.Entry(bot).State = EntityState.Modified;
+                try
+                {
+                    string url = $"http://{bot.DockerName}:8080/api/file/download?filepath={request.FilePath}";
+                    var fileBytes = await _httpClient.GetByteArrayAsync(url);
+                    var fileName = Path.GetFileName(request.FilePath);
+                    var fullFilePath = Path.Combine(zipPath, $"{bot.BotId}_{fileName}");
+                    await System.IO.File.WriteAllBytesAsync(fullFilePath, fileBytes);
+                    responses.Add(new BotResponse
+                    {
+                        BotId = bot.BotId,
+                        ResponseType = "file",
+                        Success = true,
+                        Timestamp = DateTimeOffset.UtcNow,
+                        FilePath = fullFilePath,
+                        FileName = fileName,
+                        Command = request.FilePath
+                    });
+                }
+                catch (Exception ex)
+                {
+                    responses.Add(new BotResponse
+                    {
+                        BotId = bot.BotId,
+                        ResponseType = "file",
+                        Success = false,
+                        Timestamp = DateTimeOffset.UtcNow,
+                        ResponseContent = $"Error: {ex.Message}",
+                        Command = request.FilePath
+                    });
+                }
+            }
+            _context.BotResponses.AddRange(responses);
+            await _context.SaveChangesAsync();
+            var zipFilePath = Path.Combine("BotFiles", "Download", $"{Guid.NewGuid()}.zip");
+            ZipFile.CreateFromDirectory(zipPath, zipFilePath);
+            var stream = new FileStream(zipFilePath, FileMode.Open);
+            return new FileStreamResult(stream, "application/zip")
+            {
+                FileDownloadName = request.FilePath + ".zip"
+            };
         }
 
         private static BotResponseDto MapToDto(BotResponse br)

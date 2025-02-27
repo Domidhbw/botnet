@@ -18,6 +18,12 @@ namespace CommandControlServer.Api.Controllers
         public string Command { get; set; } = string.Empty;
     }
 
+    public class DownloadRequest
+    {
+        public List<int> BotIds { get; set; } = new();
+        public string FilePath { get; set; } = string.Empty;
+    }
+
     [Route("api/[controller]")]
     [ApiController]
     public class DataController : ControllerBase
@@ -58,17 +64,16 @@ namespace CommandControlServer.Api.Controllers
         }
 
         [HttpGet("download")]
-        public async Task<IActionResult> DownloadStoredFile([FromQuery] string filePath)
+        public async Task<IActionResult> DownloadFiles([FromQuery] DownloadRequest downloadRequest)
         {
             try
             {
-                var fileBytes = await _dataService.DownloadStoredFileAsync(filePath);
-                var fileName = Path.GetFileName(filePath);
-                return File(fileBytes, "application/octet-stream", fileName);
+                FileStreamResult result = await _dataService.FetchAndDownloadAsync(downloadRequest);
+                return result;
             }
-            catch (FileNotFoundException ex)
+            catch (Exception ex)
             {
-                return NotFound(ex.Message);
+                return BadRequest($"Error downloading files: {ex.Message}");
             }
         }
 
