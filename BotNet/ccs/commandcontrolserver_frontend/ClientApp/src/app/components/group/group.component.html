@@ -1,17 +1,30 @@
-<div>
-    <div *ngIf="!editing">
-      <span>{{ group.name }}</span>
-      <button (click)="enableEdit()">Edit</button>
-      <button (click)="confirmDelete()">Delete Group</button>
-      <ul>
-        <li *ngFor="let bot of group.bots">{{ bot.name }}</li>
-      </ul>
+<div class="group-container">
+  <div *ngIf="!editing" class="group-display">
+    <div class="group-header">
+      <span class="group-name">{{ group.name }}</span>
+      <div class="group-actions">
+        <button class="btn-edit" (click)="enableEdit()">Edit</button>
+        <button class="btn-delete" (click)="confirmDelete()">Delete Group</button>
+      </div>
     </div>
-    <div *ngIf="editing">
-      <input [(ngModel)]="newName" placeholder="Gruppenname" />
-      <!-- Hier könnte eine Schnittstelle zum Hinzufügen/Entfernen von Bots ergänzt werden -->
-      <button (click)="saveGroup()">Save</button>
-      <button (click)="editing = false">Cancel</button>
+
+    <ul class="group-bots">
+      <li *ngFor="let bot of group.bots" class="group-bot">
+        {{ bot.name }}
+      </li>
+    </ul>
+  </div>
+
+  <div *ngIf="editing" class="group-edit">
+    <input
+      [(ngModel)]="newName"
+      class="group-input"
+      placeholder="Gruppenname"
+    />
+    <!-- Hier könnte eine Schnittstelle zum Hinzufügen/Entfernen von Bots ergänzt werden -->
+    <div class="group-actions">
+      <button class="btn-save" (click)="saveGroup()">Save</button>
+      <button class="btn-cancel" (click)="editing = false">Cancel</button>
     </div>
   </div>
-  
+</div>

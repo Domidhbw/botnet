@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Bot.Api.Services
 {
+    //creates a terminal to execute the command
     public class CommandService : ICommandService
     {
         public async Task<CommandResultModel> ExecuteCommandAsync(string command)
@@ -27,10 +28,10 @@ namespace Bot.Api.Services
             process.ErrorDataReceived += (sender, e) => { if (e.Data != null) errorBuilder.AppendLine(e.Data); };
 
             process.Start();
-            process.BeginOutputReadLine();  // Asynchronously reads output
-            process.BeginErrorReadLine();   // Asynchronously reads errors
+            process.BeginOutputReadLine();  
+            process.BeginErrorReadLine();  
 
-            await process.WaitForExitAsync(); // Waits for process completion
+            await process.WaitForExitAsync();
 
             return new CommandResultModel
             {

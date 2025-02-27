@@ -1,20 +1,21 @@
-/* You can add global styles to this file, and also import other style files */
-
-/* Provide sufficient contrast against white background */
-a {
-  color: #0366d6;
+/* styles.css oder styles.scss */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+body {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  font-family: 'Courier New', Courier, monospace;
 }
 
-code {
-  color: #e01a76;
-}
-
-.btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+/* Optional: Falls du ein Flexlayout für die gesamte Seite willst */
+.main-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  overflow: hidden; /* verhindert Scrollbars, falls du das wünschst */
 }

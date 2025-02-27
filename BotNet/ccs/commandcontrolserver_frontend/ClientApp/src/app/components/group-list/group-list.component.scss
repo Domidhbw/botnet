@@ -1,0 +1,49 @@
+.group-list {
+    width: 100%;
+    color: #e0e0e0;
+  
+    h2 {
+      margin-bottom: 10px;
+      color: #00ff99;
+      font-size: 1.5em;
+    }
+  
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+  
+    .group-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background-color: #2a2a2a;
+      padding: 10px;
+      margin-bottom: 8px;
+      border-radius: 4px;
+  
+      .group-name {
+        flex: 1;
+        font-weight: bold;
+      }
+  
+      .group-bot-count {
+        color: #a8a8a8;
+      }
+  
+      .btn-select {
+        padding: 5px 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        background-color: #00ff99;
+        color: #121212;
+        transition: background-color 0.3s;
+  
+        &:hover {
+          background-color: #00cc80;
+        }
+      }
+    }
+  }
+  

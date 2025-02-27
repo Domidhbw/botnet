@@ -1,7 +1,10 @@
-<h2>Gruppen Liste</h2>
-<ul>
-  <li *ngFor="let group of groups">
-    {{ group.name }} (Bots: {{ group.bots.length }})
-    <button (click)="selectGroupBots(group)">Select Group Bots</button>
-  </li>
-</ul>
+<div class="group-list">
+  <h2>Gruppen Liste</h2>
+  <ul>
+    <li *ngFor="let group of groups" class="group-item">
+      <span class="group-name">{{ group.name }}</span>
+      <span class="group-bot-count">(Bots: {{ group.bots.length }})</span>
+      <button class="btn-select" (click)="selectGroupBots(group)">Select Group Bots</button>
+    </li>
+  </ul>
+</div>

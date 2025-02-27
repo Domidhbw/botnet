@@ -1,0 +1,12 @@
+<h2 mat-dialog-title>Edit Bot</h2>
+<mat-dialog-content>
+  <div>
+    <label for="name">Bot Name:</label>
+    <input [(ngModel)]="newName" id="name" type="text" />
+  </div>
+  <div class="actions">
+    <button mat-button (click)="saveName()">Save</button>
+    <button mat-button (click)="cancel()">Cancel</button>
+    <button mat-button (click)="deleteBot()">Delete Bot</button>
+  </div>
+</mat-dialog-content>

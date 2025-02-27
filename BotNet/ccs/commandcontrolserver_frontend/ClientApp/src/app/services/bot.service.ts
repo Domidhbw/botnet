@@ -23,10 +23,14 @@ export class BotService {
     return this.http.post<Bot>(`${this.apiUrl}bot`, { port });
   }
 
-  updateBot(botId: number): Observable<Bot> {
-    return this.http.put<Bot>(`${this.apiUrl}bot/${botId}`, { botId });
+  updateBot(botId: number, newName: string): Observable<void> {
+    const body = `name: ${newName}`;
+    
+    const headers = { 'Content-Type': 'application/json' };  
+    
+    return this.http.put<void>(`${this.apiUrl}editName/${botId}`, body, { headers });
   }
-
+  
   deleteBot(botId: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}bot/${botId}`);
   }

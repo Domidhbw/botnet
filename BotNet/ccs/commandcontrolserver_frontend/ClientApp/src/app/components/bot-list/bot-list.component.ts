@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BotService } from '../../services/bot.service';
-import { Bot } from '../../models/bot.model';
 import { BotManagementService } from '../../services/bot-management.service';
+import { Bot } from '../../models/bot.model';
 
 @Component({
   selector: 'app-bot-list',
@@ -10,6 +10,7 @@ import { BotManagementService } from '../../services/bot-management.service';
 })
 export class BotListComponent implements OnInit {
   bots: Bot[] = [];
+  selectedBotIds: string[] = [];
 
   constructor(
     private botService: BotService,
@@ -22,7 +23,34 @@ export class BotListComponent implements OnInit {
     });
   }
 
-  selectBot(bot: Bot) {
-    this.botManagement.addBot(bot);
+  isSelected(bot: Bot): boolean {
+    return this.selectedBotIds.includes(bot.botId.toString());
+  }
+
+  toggleBotSelection(bot: Bot, event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    if (inputElement.checked) {
+      this.selectedBotIds.push(bot.botId.toString());
+      this.botManagement.addBot(bot);
+    } else {
+      this.selectedBotIds = this.selectedBotIds.filter(id => id !== bot.botId.toString());
+      // ggf. botManagement.removeBot(bot);
+    }
+  }
+
+  editBot(bot: Bot) {
+    // Logik zum Bearbeiten (z.B. ein Modal öffnen oder direkt Service aufrufen)
+    console.log('Edit Bot:', bot);
+  }
+
+  deleteBot(bot: Bot) {
+    // Bestätigen & löschen
+    if (confirm(`Bot ${bot.name} wirklich löschen?`)) {
+      this.botService.deleteBot(bot.botId).subscribe(() => {
+        alert(`Bot ${bot.name} gelöscht`);
+        // Liste neu laden oder local entfernen
+        this.bots = this.bots.filter(b => b.botId !== bot.botId);
+      });
+    }
   }
 }

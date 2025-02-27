@@ -25,10 +25,11 @@ export class GroupComponent {
 
   saveGroup() {
     // API-Aufruf zur Aktualisierung des Gruppennamens (und idealerweise auch der Bots)
-    this.groupService.updateGroup(this.group.botGroupId, this.newName).subscribe(updatedGroup => {
-      this.group.name = this.newName;
-      this.editing = false;
-    });
+    this.groupService.updateGroup(this.group.botGroupId, this.newName)
+      .subscribe(updatedGroup => {
+        this.group.name = this.newName;
+        this.editing = false;
+      });
   }
 
   confirmDelete() {
