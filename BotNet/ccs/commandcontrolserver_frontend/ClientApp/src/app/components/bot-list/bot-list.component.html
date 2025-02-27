@@ -2,6 +2,7 @@
 <ul>
   <li *ngFor="let bot of bots">
     {{ bot.name }} (botId: {{ bot.botId }})
+    <app-bot></app-bot>
     <button (click)="selectBot(bot)">Select</button>
   </li>
 </ul>

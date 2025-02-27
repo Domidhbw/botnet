@@ -1,35 +1,38 @@
 import { Component, Input } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Bot } from '../../models/bot.model';
 import { BotService } from '../../services/bot.service';
+import { BotEditDialogComponent } from '../../popups/bot-edit-dialog.component';
+
 @Component({
   selector: 'app-bot',
   templateUrl: './bot.component.html',
   styleUrls: ['./bot.component.scss']
 })
+
 export class BotComponent {
-  @Input() bot!: Bot;
-  editing: boolean = false;
-  newName: string = '';
+  @Input() bot!: Bot; 
 
-  constructor(private botService: BotService) {}
+  constructor(private botService: BotService, private dialog: MatDialog) {}
 
-  enableEdit() {
-    this.editing = true;
-    this.newName = this.bot.name;
-  }
+  openEditDialog(): void {
+    const dialogRef = this.dialog.open(BotEditDialogComponent, {
+      data: { bot: this.bot }
+    });
 
-  saveName() {
-    this.botService.updateBot(this.bot.botId).subscribe(updatedBot => {
-      this.bot.name = this.newName;
-      this.editing = false;
+    dialogRef.afterClosed().subscribe(updatedBot => {
+      if (updatedBot) {
+        // Update the bot's name with the new value from the dialog
+        this.bot.name = updatedBot.name;
+      }
     });
   }
 
-  confirmDelete() {
-    if (confirm(`Bist du sicher, dass du den Bot ${this.bot.name} löschen möchtest?`)) {
+  confirmDelete(): void {
+    if (confirm(`Are you sure you want to delete the bot ${this.bot.name}?`)) {
       this.botService.deleteBot(this.bot.botId).subscribe(() => {
-        alert('Bot gelöscht');
-        // Hier könnte z. B. ein Refresh der Bot-Liste erfolgen.
+        alert('Bot deleted');
+        // Optionally, refresh the bot list or update the view accordingly.
       });
     }
   }
