@@ -1,12 +1,10 @@
 export interface Bot {
-    botId: number;
-    port: number;
-    name: string;
-    status: string;
-    lastSeen: string;
-    createdAt: string;
-    updatedAt: string;
-    responses: any[];
-    botGroups: any[];
-  }
-  
+  botId: number;
+  dockerName: string;
+  name: string;
+  lastAction: string;
+  createdAt: string;
+  updatedAt: string;
+  botGroups: any[]; 
+  responses: any[]; 
+}

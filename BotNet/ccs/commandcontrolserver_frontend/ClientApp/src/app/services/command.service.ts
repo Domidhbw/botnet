@@ -33,23 +33,38 @@ export class CommandService {
     };
 
     return this.http.post<BotResponse[]>(this.commandUrl, payload)
-      .pipe(
-        catchError(err => {
-          console.error('Error executing command', err);
-          // Return an error response for each selected bot.
-          const errorResponses = bots.map(bot => ({
-            botResponseId: 0,
+    .pipe(
+      catchError(err => {
+        console.error('Error executing command', err);
+        // Return an error response for each selected bot.
+        const errorResponses = bots.map(bot => ({
+          botResponseId: 0,
+          botId: bot.botId,
+          bot: {  // Populate bot object with necessary fields (based on your actual data)
             botId: bot.botId,
-            responseType: 'command',
-            success: false,
-            timestamp: new Date().toISOString(),
-            output: `Error: ${err.message}`,
-            filePath: '',
-            fileName: ''
-          } as BotResponse));
-          return of(errorResponses);
-        })
-      );
+            dockerName: bot.dockerName,
+            name: bot.name || '',
+            lastAction: new Date().toISOString(),
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            botGroups: [],
+            responses: []
+          },
+          responseType: 'command',
+          success: false,
+          timestamp: new Date().toISOString(),
+          filePath: '',
+          fileName: '',
+          command: '',  // No command executed since there was an error
+          responseContent: {  // New field for error responses
+            command: '',  // No command executed due to error
+            output: `Error: ${err.message}`
+          }
+        } as BotResponse));
+        
+        return of(errorResponses);
+      })
+    );
   }
 
   downloadFile(filePath: string): void {

@@ -9,7 +9,6 @@ import { GroupListComponent } from './components/group-list/group-list.component
 import { TerminalComponent } from './components/terminal/terminal.component';
 import { BotComponent } from './components/bot/bot.component';
 import { GroupComponent } from './components/group/group.component';
-import { FileDownloadComponent} from './components/file-download/file-download.component';
 
 @NgModule({
   declarations: [
@@ -18,8 +17,7 @@ import { FileDownloadComponent} from './components/file-download/file-download.c
     GroupListComponent,
     TerminalComponent,
     BotComponent,
-    GroupComponent,
-    FileDownloadComponent
+    GroupComponent
   ],
   imports: [
     BrowserModule,

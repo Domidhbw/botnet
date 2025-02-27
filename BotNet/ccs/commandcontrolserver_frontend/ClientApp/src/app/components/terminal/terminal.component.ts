@@ -38,7 +38,6 @@ export class TerminalComponent {
     this.filePath = '';
   }
 
-
   filteredResponses(): BotResponse[] {
     if (this.filterBotId !== null) {
       return this.responses.filter(resp => resp.botId === this.filterBotId);

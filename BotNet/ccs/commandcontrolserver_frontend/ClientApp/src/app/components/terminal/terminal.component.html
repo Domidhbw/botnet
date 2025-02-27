@@ -21,14 +21,13 @@
     <input type="number" [(ngModel)]="filterBotId" placeholder="Bot ID" />
   </div>
 
-  <!-- Responses Display Section -->
   <div class="responses-section" *ngFor="let resp of filteredResponses()">
     <pre>
 Bot ID: {{ resp.botId }}
 Timestamp: {{ resp.timestamp }}
 Status: {{ resp.success ? 'Success' : 'Error' }}
 Response Type: {{ resp.responseType }}
-{{ resp.responseType === 'command' ? ('Output: ' + resp.output) : '' }}
+{{ resp.responseType === 'command' ? ('Output: ' + resp.responseContent) : '' }}
 {{ resp.responseType === 'file' ? ('Filename: ' + resp.fileName) : '' }}
     </pre>
   </div>
