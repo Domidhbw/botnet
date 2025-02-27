@@ -28,7 +28,7 @@ export class BotComponent {
     // Verhindert, dass das Klicken auf den Stift auch den gesamten Bot auswählt.
     event.stopPropagation();
     const dialogRef = this.dialog.open(BotEditDialogComponent, {
-      data: { bot: this }
+      data: { bot: this.bot }
     });
   
     dialogRef.afterClosed().subscribe((updatedBot: Bot | undefined) => {

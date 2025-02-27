@@ -48,6 +48,7 @@ namespace CommandControlServer.Api.Controllers
         [HttpPut("editName/{id}")]
         public async Task<IActionResult> EditName(int id, [FromBody] string name)
         {
+            if (string.IsNullOrWhiteSpace(name)) return BadRequest("Name cannot be empty");
             if (await _botService.EditNameAsync(id, name))
                 return NoContent();
 

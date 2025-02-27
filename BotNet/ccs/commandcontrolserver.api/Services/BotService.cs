@@ -108,8 +108,7 @@ namespace CommandControlServer.Api.Services
         public async Task<bool> EditNameAsync(int id, string name)
         {
             var bot = await _context.Bots.FindAsync(id);
-            if (bot == null || (!String.IsNullOrEmpty(name) && _context.Bots.Any(b => b.Name == name && b.BotId != id)))
-                return false;
+            if (bot == null || _context.Bots.Any(b => b.Name == name && b.BotId != id)) return false;
 
             bot.Name = name;
             bot.UpdatedAt = DateTimeOffset.UtcNow;
