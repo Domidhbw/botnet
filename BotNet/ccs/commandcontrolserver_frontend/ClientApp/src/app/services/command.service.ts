@@ -10,9 +10,7 @@ import { BotResponse } from '../models/bot-response.model';
   providedIn: 'root'
 })
 export class CommandService {
-  // API endpoints.
   private commandUrl = 'http://localhost:5002/api/Data/execute/command';
-  private fileDownloadUrl = 'http://localhost:5002/api/Data/execute/file';
 
   constructor(
     private http: HttpClient,
@@ -36,11 +34,10 @@ export class CommandService {
     .pipe(
       catchError(err => {
         console.error('Error executing command', err);
-        // Return an error response for each selected bot.
         const errorResponses = bots.map(bot => ({
           botResponseId: 0,
           botId: bot.botId,
-          bot: {  // Populate bot object with necessary fields (based on your actual data)
+          bot: {  
             botId: bot.botId,
             dockerName: bot.dockerName,
             name: bot.name || '',
@@ -55,9 +52,9 @@ export class CommandService {
           timestamp: new Date().toISOString(),
           filePath: '',
           fileName: '',
-          command: '',  // No command executed since there was an error
-          responseContent: {  // New field for error responses
-            command: '',  // No command executed due to error
+          command: '',  
+          responseContent: {  
+            command: '', 
             output: `Error: ${err.message}`
           }
         } as BotResponse));
@@ -69,36 +66,49 @@ export class CommandService {
 
   downloadFile(filePath: string): void {
     const bots: Bot[] = this.botManagement.getSelectedBots();
-
+  
     if (!bots || bots.length === 0) {
       console.warn('No bots selected.');
       return;
     }
-
+  
     const botIds = bots.map(bot => bot.botId);
     const payload = {
-      botIds: botIds,
-      filePath: filePath
+      BotIds: botIds,
+      FilePath: filePath
     };
-
-    this.http.post(this.fileDownloadUrl, payload, { responseType: 'blob' })
-      .pipe(
-        catchError(err => {
-          console.error('Error downloading file', err);
-          return of(null);
-        })
-      )
-      .subscribe(blob => {
-        if (blob) {
-          // Create a temporary link element and trigger the download.
-          const a = document.createElement('a');
-          const objectUrl = URL.createObjectURL(blob);
-          a.href = objectUrl;
-          // Extract a filename from the provided filePath or default to 'download'
-          a.download = filePath.split('/').pop() || 'download';
-          a.click();
-          URL.revokeObjectURL(objectUrl);
+  
+    const queryString = new URLSearchParams({
+      filePath: filePath
+    }).toString();
+  
+    const url = `http://localhost:5002/api/Data/download?${queryString}`;
+  
+    try {
+      fetch(url, {
+        method: 'GET', 
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Error: ${response.statusText}`);
         }
+        return response.blob();
+      })
+      .then(blob => {
+        const objectUrl = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = objectUrl;
+        a.download = filePath.split('/').pop() || 'downloadedFile';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(objectUrl);
+      })
+      .catch(error => {
+        console.error('Error downloading the file:', error);
       });
+    } catch (error) {
+      console.error('Fetch error:', error);
+    }
   }
 }
