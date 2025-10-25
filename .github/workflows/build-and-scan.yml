@@ -17,15 +17,15 @@ jobs:
       matrix:
         include:
           - svc: bot-api
-            context: ./bot
+            context: ./BotNet/bot
             dockerfile: Bot.Api/Dockerfile
             port: "8080"              # nur Info
           - svc: ccs-api
-            context: ./ccs
+            context: ./BotNet/ccs
             dockerfile: commandcontrolserver.api/Dockerfile
             port: "8080"
           - svc: ccs-frontend
-            context: ./ccs/commandcontrolserver_frontend
+            context: ./BotNet/ccs/commandcontrolserver_frontend
             dockerfile: Dockerfile
             port: "80"
     steps:
