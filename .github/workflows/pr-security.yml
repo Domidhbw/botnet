@@ -15,6 +15,30 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Locate .sln or .csproj
+        id: dotnet_path
+        shell: bash
+        run: |
+          set -e
+          SOLN=$(git ls-files '**/*.sln' | head -n1 || true)
+          if [ -z "$SOLN" ]; then
+            PROJ=$(git ls-files '**/*.csproj' | head -n1 || true)
+            if [ -z "$PROJ" ]; then
+              echo "No .sln or .csproj found"; exit 1
+            fi
+            echo "path=$PROJ" >> $GITHUB_OUTPUT
+          else
+            echo "path=$SOLN" >> $GITHUB_OUTPUT
+          fi
+          echo "Using: $(cat $GITHUB_OUTPUT 2>/dev/null || echo "${SOLN:-$PROJ}")"
+
+      - name: Restore (.NET)
+        run: dotnet restore "${{ steps.dotnet_path.outputs.path }}"
+
+      - name: Build (.NET) with analyzers (warnings as errors)
+        run: dotnet build "${{ steps.dotnet_path.outputs.path }}" --configuration Release /warnaserror
+
+
       # -------- Backend (.NET) Build mit Roslyn-Analyzern (SecurityCodeScan) --------
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
