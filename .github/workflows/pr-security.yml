@@ -97,7 +97,8 @@ jobs:
       - name: Semgrep SAST
         uses: returntocorp/semgrep-action@v1
         with:
-          config: .semgrep.yml   # keep at repo root or adjust
+          config: .semgrep.yml
+          entryPoint: semgrep ci
           args: --sarif --output=semgrep.sarif
 
       - name: Upload Semgrep SARIF
