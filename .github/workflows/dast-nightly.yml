@@ -1,0 +1,40 @@
+name: dast-nightly
+on:
+  schedule: [{ cron: '0 20 * * *' }]  # täglich 20:00 UTC
+  workflow_dispatch: {}
+permissions:
+  contents: read
+  actions: read
+jobs:
+  zap:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Starte Test-Stack (Frontend+Backend+DB) – passe den Pfad an:
+      - name: Start test stack
+        run: docker compose -f docker/compose.test.yml up -d --build
+
+      - name: Wait for app
+        run: |
+          for i in {1..60}; do
+            if curl -sSf http://localhost:8080/ > /dev/null; then
+              echo "App is up"; exit 0;
+            fi
+            sleep 5
+          done
+          echo "App did not start in time"; exit 1
+
+      - name: OWASP ZAP Baseline
+        uses: zaproxy/action-baseline@v0.10.0
+        with:
+          target: 'http://localhost:8080'
+          rules_file_name: '.zap/rules.tsv'
+          cmd_options: '-a'  # aktivere passive Checks
+      - name: Upload ZAP report
+        uses: actions/upload-artifact@v4
+        with:
+          name: zap-report
+          path: report_html.html

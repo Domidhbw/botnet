@@ -35,10 +35,10 @@ jobs:
       - name: Set image tags
         id: meta
         run: |
-          REPO="ghcr.io/${{ github.repository }}"
-          SHA="${{ github.sha }}"
-          IMAGE="${REPO}:${{ matrix.svc }}-${SHA}"
-          echo "image=$IMAGE" >> $GITHUB_OUTPUT
+            REPO_LC=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+            SHA="${{ github.sha }}"
+            IMAGE="ghcr.io/${REPO_LC}:${{ matrix.svc }}-${SHA}"
+            echo "image=$IMAGE" >> $GITHUB_OUTPUT
 
       # Build lokal laden (nicht pushen), damit Trivy scannen kann
       - name: Set up Docker Buildx
