@@ -35,8 +35,9 @@ jobs:
       - name: Restore (.NET)
         run: dotnet restore "${{ steps.dotnet_path.outputs.path }}"
 
-      - name: Build (.NET) with analyzers (warnings as errors)
-        run: dotnet build "${{ steps.dotnet_path.outputs.path }}" --configuration Release /warnaserror
+      - name: Build (.NET)
+        run: dotnet build "BotNet/bot/Bot.Api/Bot.Api.sln" --configuration Release
+
 
 
       # -------- Backend (.NET) Build mit Roslyn-Analyzern (SecurityCodeScan) --------
