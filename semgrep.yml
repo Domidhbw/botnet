@@ -1,0 +1,13 @@
+# C# + TypeScript (Angular) + Web best practices
+configs:
+  - p/owasp-top-ten
+  - p/security-audit
+  - p/csharp
+  - p/typescript
+# Optional: eigene Regeln ergänzen
+# rules:
+#   - id: no-process-start
+#     patterns:
+#       - pattern: Process.Start(...)
+#     message: "Vermeide direkte Process.Start-Aufrufe. Verwende sichere Abstraktionen/Whitelisting."
+#     severity: ERROR
