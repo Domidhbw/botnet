@@ -31,6 +31,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+       - name: Debug repo tree
+         run: |
+            pwd
+            ls -la
+            echo "Context: ${{ matrix.context }}"
+            echo "Dockerfile (relative to context): ${{ matrix.dockerfile }}"
+            ls -la "${{ matrix.context }}" || true
+            DF_DIR="$(dirname "${{ matrix.dockerfile }}")"
+            if [ "$DF_DIR" != "." ]; then ls -la "${{ matrix.context }}/$DF_DIR" || true; fi
 
       - name: Set image tags
         id: meta
