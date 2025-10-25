@@ -1,0 +1,93 @@
+name: pr-security
+on:
+  pull_request:
+    branches: [ main ]
+permissions:
+  contents: read
+  security-events: write   # für SARIF Upload
+  actions: read
+  checks: write
+jobs:
+  pr-security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # -------- Backend (.NET) Build mit Roslyn-Analyzern (SecurityCodeScan) --------
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Restore (.NET)
+        run: dotnet restore
+      # Wichtig: SecurityCodeScan als NuGet Analyzer im .csproj installieren (siehe unten)
+      - name: Build (.NET) with analyzers (warnings as errors)
+        run: dotnet build --configuration Release /warnaserror
+
+      # -------- Frontend (Angular) vorbereiten --------
+      - name: Use Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+          cache-dependency-path: ClientApp/package-lock.json
+      - name: Install (Angular)
+        working-directory: ClientApp
+        run: npm ci
+      - name: Lint/Build (Angular)
+        working-directory: ClientApp
+        run: |
+          npm run lint --if-present
+          npm run build --if-present
+
+
+      # -------- SCA: OWASP Dependency-Check (NuGet) --------
+      - name: Dependency-Check (.NET)
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: 'dotnet-backend'
+          path: '.'
+          format: 'HTML,JSON'
+          failOnCVSS: '7.0'
+      - name: Upload DepCheck .NET report
+        uses: actions/upload-artifact@v4
+        with:
+          name: depcheck-dotnet
+          path: ${{ github.workspace }}/reports
+
+      # -------- SCA: OWASP Dependency-Check (npm) --------
+      - name: Dependency-Check (npm)
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: 'angular-frontend'
+          path: 'ClientApp'
+          format: 'HTML,JSON'
+          failOnCVSS: '7.0'
+      - name: Upload DepCheck npm report
+        uses: actions/upload-artifact@v4
+        with:
+          name: depcheck-npm
+          path: ${{ github.workspace }}/reports
+
+      # -------- Secrets: Gitleaks --------
+      - name: Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITLEAKS_LICENSE: community
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          args: detect --redact --no-banner --report-format sarif --report-path gitleaks.sarif
+      - name: Upload Gitleaks SARIF
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: gitleaks.sarif
+
+      # -------- IaC / Misconfig: Checkov (Dockerfile, Compose, K8s) --------
+      - name: Checkov
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          directory: .
+          framework: dockerfile,kubernetes,compose
+          soft_fail: false
