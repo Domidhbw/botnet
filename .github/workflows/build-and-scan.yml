@@ -79,7 +79,13 @@ jobs:
           ignore-unfixed: true
 
       - name: Generate SBOM (CycloneDX)
-        run: trivy image --format cyclonedx --output sbom-${{ matrix.svc }}.json ${{ steps.meta.outputs.image }}
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          image-ref: ${{ steps.meta.outputs.image }}
+          format: cyclonedx
+          output: sbom-${{ matrix.svc }}.json
+          exit-code: '0'     # SBOM creation should not fail the job
+
 
       - name: Upload SBOM
         uses: actions/upload-artifact@v4
