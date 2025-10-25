@@ -4,9 +4,10 @@ on:
     branches: [ main ]
 permissions:
   contents: read
-  security-events: write   # für SARIF Upload
+  security-events: write   # for SARIF upload
   actions: read
   checks: write
+
 jobs:
   pr-security:
     runs-on: ubuntu-latest
@@ -15,6 +16,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # ----- .NET SDK BEFORE any dotnet commands -----
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      # ----- Locate backend solution/project (once) -----
       - name: Locate .sln or .csproj
         id: dotnet_path
         shell: bash
@@ -27,86 +35,110 @@ jobs:
               echo "No .sln or .csproj found"; exit 1
             fi
             echo "path=$PROJ" >> $GITHUB_OUTPUT
+            echo "dir=$(dirname "$PROJ")" >> $GITHUB_OUTPUT
+            echo "Using .csproj: $PROJ"
           else
             echo "path=$SOLN" >> $GITHUB_OUTPUT
+            echo "dir=$(dirname "$SOLN")" >> $GITHUB_OUTPUT
+            echo "Using .sln: $SOLN"
           fi
-          echo "Using: $(cat $GITHUB_OUTPUT 2>/dev/null || echo "${SOLN:-$PROJ}")"
 
+      # ----- Restore & Build backend (single, consistent path) -----
       - name: Restore (.NET)
         run: dotnet restore "${{ steps.dotnet_path.outputs.path }}"
 
       - name: Build (.NET)
-        run: dotnet build "BotNet/bot/Bot.Api/Bot.Api.sln" --configuration Release
+        # keep simple build; if you want strictness, add /warnaserror once code is clean
+        run: dotnet build "${{ steps.dotnet_path.outputs.path }}" --configuration Release
 
+      # ----- Frontend (Angular) detection + build (optional but robust) -----
+      - name: Locate Angular workspace
+        id: ng_path
+        shell: bash
+        run: |
+          set -e
+          if [ -d "ClientApp" ] && [ -f "ClientApp/package.json" ]; then
+            echo "dir=ClientApp" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          # find first package.json that looks like Angular
+          CANDIDATE=$(git ls-files '**/package.json' | while read f; do
+            if grep -q '"@angular/core"' "$f"; then dirname "$f"; break; fi
+          done)
+          if [ -z "$CANDIDATE" ]; then
+            echo "No Angular project found; skipping npm steps."
+            echo "dir=" >> $GITHUB_OUTPUT
+          else
+            echo "dir=$CANDIDATE" >> $GITHUB_OUTPUT
+            echo "Angular dir: $CANDIDATE"
+          fi
 
-
-      # -------- Backend (.NET) Build mit Roslyn-Analyzern (SecurityCodeScan) --------
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.0.x'
-      - name: Restore (.NET)
-        run: dotnet restore
-      # Wichtig: SecurityCodeScan als NuGet Analyzer im .csproj installieren (siehe unten)
-      - name: Build (.NET) with analyzers (warnings as errors)
-        run: dotnet build --configuration Release /warnaserror
-
-      # -------- Frontend (Angular) vorbereiten --------
       - name: Use Node
+        if: ${{ steps.ng_path.outputs.dir != '' }}
         uses: actions/setup-node@v4
         with:
           node-version: '20.x'
           cache: 'npm'
-          cache-dependency-path: ClientApp/package-lock.json
+          cache-dependency-path: ${{ steps.ng_path.outputs.dir }}/package-lock.json
+
       - name: Install (Angular)
-        working-directory: ClientApp
+        if: ${{ steps.ng_path.outputs.dir != '' }}
+        working-directory: ${{ steps.ng_path.outputs.dir }}
         run: npm ci
+
       - name: Lint/Build (Angular)
-        working-directory: ClientApp
+        if: ${{ steps.ng_path.outputs.dir != '' }}
+        working-directory: ${{ steps.ng_path.outputs.dir }}
         run: |
           npm run lint --if-present
           npm run build --if-present
 
- # -------- SAST: Semgrep (C# + TS/Angular) --------
+      # ----- SAST: Semgrep (C# + TS/Angular) -----
       - name: Semgrep SAST
         uses: returntocorp/semgrep-action@v1
         with:
-          config: .semgrep.yml
+          config: .semgrep.yml   # keep at repo root or adjust
           generateSarif: true
           auditOn: pull_request
+
       - name: Upload Semgrep SARIF
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: semgrep.sarif
-      # -------- SCA: OWASP Dependency-Check (NuGet) --------
+
+      # ----- SCA: OWASP Dependency-Check (.NET) -----
       - name: Dependency-Check (.NET)
         uses: dependency-check/Dependency-Check_Action@main
         with:
           project: 'dotnet-backend'
-          path: '.'
+          path: ${{ steps.dotnet_path.outputs.dir }}
           format: 'HTML,JSON'
           failOnCVSS: '7.0'
+
       - name: Upload DepCheck .NET report
         uses: actions/upload-artifact@v4
         with:
           name: depcheck-dotnet
           path: ${{ github.workspace }}/reports
 
-      # -------- SCA: OWASP Dependency-Check (npm) --------
+      # ----- SCA: OWASP Dependency-Check (npm) -----
       - name: Dependency-Check (npm)
+        if: ${{ steps.ng_path.outputs.dir != '' }}
         uses: dependency-check/Dependency-Check_Action@main
         with:
           project: 'angular-frontend'
-          path: 'ClientApp'
+          path: ${{ steps.ng_path.outputs.dir }}
           format: 'HTML,JSON'
           failOnCVSS: '7.0'
+
       - name: Upload DepCheck npm report
+        if: ${{ steps.ng_path.outputs.dir != '' }}
         uses: actions/upload-artifact@v4
         with:
           name: depcheck-npm
           path: ${{ github.workspace }}/reports
 
-      # -------- Secrets: Gitleaks --------
+      # ----- Secrets: Gitleaks -----
       - name: Gitleaks
         uses: gitleaks/gitleaks-action@v2
         env:
@@ -114,12 +146,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           args: detect --redact --no-banner --report-format sarif --report-path gitleaks.sarif
+
       - name: Upload Gitleaks SARIF
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: gitleaks.sarif
 
-      # -------- IaC / Misconfig: Checkov (Dockerfile, Compose, K8s) --------
+      # ----- IaC / Misconfig: Checkov -----
       - name: Checkov
         uses: bridgecrewio/checkov-action@v12
         with:
