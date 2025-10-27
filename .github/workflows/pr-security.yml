@@ -93,15 +93,30 @@ jobs:
           npm run lint --if-present
           npm run build --if-present
 
-      # ----- SAST: Semgrep (C# + TS/Angular) -----
+        # ----- SAST: Semgrep (C# + TS/Angular) -----
       - name: Set up Python
-        uses: actions/checkout@v4
+        uses: actions/setup-python@v5
         with:
-            python-version: '3.x'
-      - name: Install Semgrep 
-        run: pip install Semgrep
-      - name: Install Semgrep 
-        run: semgrep --config auto --error || true
+          python-version: '3.x'
+
+      - name: Install Semgrep
+        run: pip install semgrep
+
+        # If you keep a repo config, point to it; else use "auto"
+      - name: Run Semgrep (emit SARIF)
+        run: |
+          semgrep ci \
+            --config .semgrep.yml 2>/dev/null || true
+          # If you don't have .semgrep.yml, switch the previous line to:
+          # semgrep ci --config auto 2>/dev/null || true
+          # Now re-run to produce SARIF output file:
+          semgrep --config .semgrep.yml --sarif --output "${GITHUB_WORKSPACE}/semgrep.sarif" || true
+
+      - name: Upload Semgrep SARIF
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: ${{ github.workspace }}/semgrep.sarif
+          category: semgrep
          
 
       # ----- SCA: OWASP Dependency-Check (.NET) -----
@@ -113,12 +128,6 @@ jobs:
           format: 'ALL'                               # or 'SARIF' if you only want SARIF
           out: 'depcheck-dotnet'                      # output directory
           args: --failOnCVSS 7.0                      # <-- pass threshold via args
-
-      - name: Upload Semgrep SARIF
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: semgrep.sarif
-          category: semgrep
           
       - name: Upload DepCheck .NET SARIF
         uses: github/codeql-action/upload-sarif@v3
