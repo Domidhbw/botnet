@@ -114,11 +114,17 @@ jobs:
           out: 'depcheck-dotnet'                      # output directory
           args: --failOnCVSS 7.0                      # <-- pass threshold via args
 
-
+      - name: Upload Semgrep SARIF
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: semgrep.sarif
+          category: semgrep
+          
       - name: Upload DepCheck .NET SARIF
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: depcheck-dotnet/dependency-check-report.sarif
+          category: depcheck-dotnet
 
       - name: Upload DepCheck .NET reports (artifact)
         uses: actions/upload-artifact@v4
@@ -143,6 +149,7 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: depcheck-npm/dependency-check-report.sarif
+          category: depcheck-npm
 
       - name: Upload DepCheck npm reports (artifact)
         if: ${{ steps.ng_path.outputs.dir != '' }}
@@ -165,6 +172,7 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: gitleaks.sarif
+          category: gitleaks
 
       # ----- IaC / Misconfig: Checkov -----
       - name: Checkov
