@@ -1,4 +1,4 @@
-﻿{
+{
     "$schema":  "./node_modules/@angular/cli/lib/config/schema.json",
     "version":  1,
     "newProjectRoot":  "projects",
@@ -74,20 +74,20 @@
                                                                              "serve":  {
                                                                                            "builder":  "@angular-devkit/build-angular:dev-server",
                                                                                            "configurations":  {
-                                                                                                                  "production":  {
-                                                                                                                                     "browserTarget":  "commandcontrolserver_frontend:build:production"
+                                                                                                                  "production": {
+                                                                                                                    "buildTarget": "commandcontrolserver_frontend:build:production"
                                                                                                                                  },
-                                                                                                                  "development":  {
-                                                                                                                                      "browserTarget":  "commandcontrolserver_frontend:build:development",
-                                                                                                                                      "proxyConfig":  "proxy.conf.js"
+                                                                                                                  "development": {
+                                                                                                                    "proxyConfig": "proxy.conf.js",
+                                                                                                                                      "buildTarget": "commandcontrolserver_frontend:build:development"
                                                                                                                                   }
                                                                                                               },
                                                                                            "defaultConfiguration":  "development"
                                                                                        },
                                                                              "extract-i18n":  {
                                                                                                   "builder":  "@angular-devkit/build-angular:extract-i18n",
-                                                                                                  "options":  {
-                                                                                                                  "browserTarget":  "commandcontrolserver_frontend:build"
+                                                                                                  "options": {
+                                                                                                    "buildTarget": "commandcontrolserver_frontend:build"
                                                                                                               }
                                                                                               },
                                                                              "test":  {
