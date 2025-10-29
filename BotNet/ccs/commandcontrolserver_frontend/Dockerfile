@@ -34,5 +34,21 @@ RUN dotnet publish "./commandcontrolserver_frontend.csproj" -c $BUILD_CONFIGURAT
 # ---------- Final runtime ----------
 FROM base AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
+
+# Install curl (for healthcheck) and create non-root user
+RUN apt-get update && apt-get install -y --no-install-recommends curl \
+    && rm -rf /var/lib/apt/lists/* \
+    && groupadd --gid 10001 appuser \
+    && useradd --uid 10001 --gid 10001 --create-home --shell /bin/bash appuser
+
+# Copy app as appuser so permissions are correct
+COPY --from=publish --chown=appuser:appuser /app/publish .
+
+# Drop privileges
+USER appuser
+
+# Healthcheck (adjust path/port if needed)
+HEALTHCHECK --interval=30s --timeout=3s --retries=3 \
+  CMD curl -fsS http://localhost/health || exit 1
+
 ENTRYPOINT ["dotnet", "commandcontrolserver_frontend.dll"]

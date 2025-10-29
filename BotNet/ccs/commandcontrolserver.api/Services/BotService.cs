@@ -91,6 +91,8 @@ namespace CommandControlServer.Api.Services
         {
             if (await _context.Bots.AnyAsync(b => b.DockerName == data)) return null;
 
+            Console.WriteLine("test");
+
             var bot = new Bot
             {
                 DockerName = data,
