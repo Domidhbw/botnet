@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,24 +13,17 @@ import { BotComponent } from './components/bot/bot.component';
 import { GroupComponent } from './components/group/group.component';
 import { BotEditDialogComponent } from './popups/bot-edit-dialog.component';
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    BotListComponent,
-    GroupListComponent,
-    TerminalComponent,
-    BotComponent,
-    GroupComponent,
-    BotEditDialogComponent,
-  ],
-  imports: [
-    BrowserModule,
-    MatDialogModule,
-    MatButtonModule,
-    FormsModule,
-    HttpClientModule
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        BotListComponent,
+        GroupListComponent,
+        TerminalComponent,
+        BotComponent,
+        GroupComponent,
+        BotEditDialogComponent,
+    ],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        MatDialogModule,
+        MatButtonModule,
+        FormsModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
 export class AppModule { }
