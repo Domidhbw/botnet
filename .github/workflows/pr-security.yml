@@ -205,18 +205,29 @@ jobs:
 
       # ----- IaC / Misconfig: Checkov -----
       - name: Checkov
+        id: checkov
         uses: bridgecrewio/checkov-action@v12
         with:
           directory: .
           framework: all
-          soft_fail: false
+          soft_fail: false          # fail the step on findings
           log_level: WARNING
           output_format: sarif
-          output_file_path: checkov.sarif   # <-- this is what you'll upload
+          output_file_path: checkov.sarif
 
+      # Ensure SARIF is uploaded even if the step above failed
       - name: Upload SARIF (Checkov)
+        if: always()
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: checkov.sarif         # <-- match the file above
+          sarif_file: checkov.sarif
           category: checkov
+
+      # Optional: also keep a copy as a build artifact
+      - name: Upload Checkov SARIF artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: checkov-sarif
+          path: checkov.sarif
 
