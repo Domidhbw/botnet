@@ -212,9 +212,11 @@ jobs:
           soft_fail: false
           log_level: WARNING
           output_format: sarif
-          output_file_path: checkov.sarif
-      - name: Upload SARIF
+          output_file_path: checkov.sarif   # <-- this is what you'll upload
+
+      - name: Upload SARIF (Checkov)
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: depcheck-checkov/dependency-checkov.sarif
+          sarif_file: checkov.sarif         # <-- match the file above
+          category: checkov
 
