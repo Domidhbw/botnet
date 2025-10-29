@@ -33,6 +33,8 @@
     "run-script-os": "^1.1.6",
     "rxjs": "~7.8.1",
     "tslib": "^2.5.0",
+    "webpack": "^5.102.1",
+    "webpack-cli": "^6.0.1",
     "zone.js": "~0.13.0"
   },
   "devDependencies": {
@@ -52,7 +54,6 @@
     "webpack-dev-server": "^5.2.2"
   },
   "overrides": {
-    "autoprefixer": "10.4.5",
-    "webpack": "5.81.0"
+    "autoprefixer": "10.4.5"
   }
 }
