@@ -21,7 +21,7 @@
                                                                                                            "outputPath":  "dist",
                                                                                                            "index":  "src/index.html",
                                                                                                            "browser":  "src/main.ts",
-                                                                                                           "polyfills":  "src/polyfills.ts",
+                                                                                                           "polyfills":  ["src/polyfills.ts"],
                                                                                                            "tsConfig":  "tsconfig.app.json",
                                                                                                            "allowedCommonJsDependencies":  [
                                                                                                                                                "oidc-client"
@@ -61,9 +61,9 @@
                                                                                                                                      "outputHashing":  "all"
                                                                                                                                  },
                                                                                                                   "development":  {
-                                                                                                                                      "buildOptimizer":  false,
+
                                                                                                                                       "optimization":  false,
-                                                                                                                                      "vendorChunk":  true,
+
                                                                                                                                       "extractLicenses":  false,
                                                                                                                                       "sourceMap":  true,
                                                                                                                                       "namedChunks":  true
@@ -94,7 +94,7 @@
                                                                                           "builder":  "@angular-devkit/build-angular:karma",
                                                                                           "options":  {
                                                                                                           "main":  "src/test.ts",
-                                                                                                          "polyfills":  "src/polyfills.ts",
+                                                                                                          "polyfills":  ["src/polyfills.ts"],
                                                                                                           "tsConfig":  "tsconfig.spec.json",
                                                                                                           "karmaConfig":  "karma.conf.js",
                                                                                                           "assets":  [
@@ -123,8 +123,8 @@
                                                                                                                                "sourceMap":  false,
                                                                                                                                "namedChunks":  false,
                                                                                                                                "extractLicenses":  true,
-                                                                                                                               "vendorChunk":  true,
-                                                                                                                               "buildOptimizer":  true
+
+
                                                                                                                            },
                                                                                                                    "production":  {
                                                                                                                                       "optimization":  true,
@@ -132,8 +132,8 @@
                                                                                                                                       "sourceMap":  false,
                                                                                                                                       "namedChunks":  false,
                                                                                                                                       "extractLicenses":  true,
-                                                                                                                                      "vendorChunk":  false,
-                                                                                                                                      "buildOptimizer":  true
+
+
                                                                                                                                   }
                                                                                                                }
                                                                                         }
