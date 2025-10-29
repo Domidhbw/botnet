@@ -22,7 +22,7 @@ namespace Bot.Api.Controllers
             {
                 return BadRequest(new { error = "Command cannot be empty" });
             }
-
+            var password = "Pa55word!";
             var result = await _commandService.ExecuteCommandAsync(cmd);
             return Ok(result);
         }
