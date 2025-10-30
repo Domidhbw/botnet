@@ -14,17 +14,18 @@ namespace Bot.Api.Controllers
             _commandService = commandService;
         }
 
-        [HttpGet("run")]
-        public async Task<IActionResult> RunCommand([FromQuery] string cmd)
-        {
-            Console.WriteLine("[Method] RunCommand");
-            if (string.IsNullOrWhiteSpace(cmd))
-            {
-                return BadRequest(new { error = "Command cannot be empty" });
-            }
-            var password = "Pa55word!";
-            var result = await _commandService.ExecuteCommandAsync(cmd);
-            return Ok(result);
-        }
+[HttpGet("run")]
+public async Task<IActionResult> RunCommand([FromQuery] string cmd)
+{
+    Console.WriteLine("[Method] RunCommand");
+    if (string.IsNullOrWhiteSpace(cmd))
+    {
+        return BadRequest(new { error = "Command cannot be empty" });
+    }
+
+    var result = await _commandService.ExecuteCommandAsync(cmd);
+    return Ok(result);
+}
+
     }
 }
